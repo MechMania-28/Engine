@@ -13,6 +13,15 @@ public class StatSet {
     this.range = range;
   }
 
+  public StatSet plus(StatSet other){
+    return new StatSet(
+        this.maxHealth + other.maxHealth,
+        this.damage + other.damage,
+        this.speed + other.speed,
+        this.range + other.range
+    );
+  }
+
   public int getMaxHealth() {
     return maxHealth;
   }
