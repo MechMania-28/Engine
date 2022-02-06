@@ -1,4 +1,4 @@
-package mech.mania.engine;
+package mech.mania.engine.player;
 
 public enum CharacterClass {
   KNIGHT(9, 6, 2, 1),

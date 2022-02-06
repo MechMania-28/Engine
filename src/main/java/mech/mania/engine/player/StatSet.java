@@ -1,5 +1,8 @@
-package mech.mania.engine;
+package mech.mania.engine.player;
 
+/**
+ *
+ */
 public class StatSet {
   private int maxHealth;
   private int damage;
@@ -13,6 +16,12 @@ public class StatSet {
     this.range = range;
   }
 
+  /**
+   * Adds two StatSets.
+   *
+   * @param other The StatSet to be summed with this StatSet.
+   * @return Sum StatSet.
+   */
   public StatSet plus(StatSet other){
     return new StatSet(
         this.maxHealth + other.maxHealth,
