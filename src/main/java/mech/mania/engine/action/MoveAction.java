@@ -1,5 +1,5 @@
 package mech.mania.engine.action;
 
-public class MoveAction implements Action {
+public class MoveAction extends Action {
 
 }

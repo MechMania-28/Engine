@@ -1,4 +1,5 @@
 package mech.mania.engine.action;
 
-public interface Action {
+public abstract class Action {
+  private int executingPlayerIndex;
 }

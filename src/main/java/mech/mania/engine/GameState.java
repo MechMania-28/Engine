@@ -1,8 +1,10 @@
 package mech.mania.engine;
 
-import mech.mania.engine.player.Item;
+import mech.mania.engine.action.AttackAction;
+import mech.mania.engine.action.BuyAction;
+import mech.mania.engine.action.MoveAction;
+import mech.mania.engine.action.UseAction;
 import mech.mania.engine.player.PlayerState;
-import mech.mania.engine.player.Position;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,35 +15,32 @@ public class GameState {
   private final List<PlayerState> playerStateList = Arrays.asList(new PlayerState[4]);
 
   /**
-   * Executes a {@link mech.mania.engine.action.UseAction} for a given player.
+   * Executes a {@link mech.mania.engine.action.UseAction}.
    *
-   * @param playerIndex Index of the player performing the action.
+   * @param useAction The action to be executed.
    */
-  public void executeUse(int playerIndex) {}
+  public void executeUse(UseAction useAction) {}
 
   /**
-   * Executes a {@link mech.mania.engine.action.MoveAction} for a given player.
+   * Executes a {@link mech.mania.engine.action.MoveAction}.
    *
-   * @param playerIndex Index of the player performing the action.
-   * @param position The position being moved to.
+   * @param moveAction The action to be executed.
    */
-  public void executeMove(int playerIndex, Position position) {}
+  public void executeMove(MoveAction moveAction) {}
 
   /**
-   * Executes a {@link mech.mania.engine.action.AttackAction} for a given player.
+   * Executes a {@link mech.mania.engine.action.AttackAction}.
    *
-   * @param playerIndex Index of the player performing the action.
-   * @param targetPlayerIndex Index of the player being targeted by the attack.
+   * @param attackAction The action to be executed.
    */
-  public void executeAttack(int playerIndex, int targetPlayerIndex) {}
+  public void executeAttack(AttackAction attackAction) {}
 
   /**
-   * Executes a {@link mech.mania.engine.action.BuyAction} for a given player.
+   * Executes a {@link mech.mania.engine.action.BuyAction}.
    *
-   * @param playerIndex Index of the player performing the action.
-   * @param item The item being bought.
+   * @param buyAction The action to be executed.
    */
-  public void executeBuy(int playerIndex, Item item) {}
+  public void executeBuy(BuyAction buyAction) {}
 
   /**
    * Compiles the most recent turn's executed actions for all 4 players.
