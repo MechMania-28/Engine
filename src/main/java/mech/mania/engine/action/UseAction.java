@@ -1,4 +1,4 @@
 package mech.mania.engine.action;
 
-public class UseAction {
+public class UseAction extends Action {
 }
