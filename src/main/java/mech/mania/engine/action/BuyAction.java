@@ -1,4 +1,4 @@
 package mech.mania.engine.action;
 
-public class BuyAction {
+public class BuyAction implements Action{
 }
