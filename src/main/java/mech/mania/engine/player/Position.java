@@ -36,6 +36,6 @@ public class Position {
     }
     Position p = (Position) obj;
     // If the individual coordinates are the same
-    return ((this.getX() == p.getX()) && (this.getY() == p.getY()));
+    return ((this.getX() == p.getX()) & (this.getY() == p.getY()));
   }
 }
