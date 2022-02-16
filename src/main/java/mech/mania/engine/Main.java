@@ -1,7 +1,7 @@
 package mech.mania.engine;
 
 public class Main {
-  public void main(String[] args){
+  public static void main(String[] args){
     /**
      * A single turn:
      * - Use
