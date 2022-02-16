@@ -19,6 +19,17 @@ public class GameState {
   /** Holds the {@link PlayerState} of each of the 4 players in player order. */
   private final List<PlayerState> playerStateList = Arrays.asList(new PlayerState[4]);
 
+  /** Constructor that takes a list of playerStates. */
+  public GameState(List<PlayerState> players) {
+    playerStateList.set(0, players.get(0));
+    playerStateList.set(1, players.get(1));
+    playerStateList.set(2, players.get(2));
+    playerStateList.set(3, players.get(3));
+  }
+
+  public PlayerState getPlayerStateByIndex(int index) {
+    return playerStateList.get(index);
+  }
   /**
    * Executes a {@link mech.mania.engine.action.UseAction}.
    *
@@ -56,8 +67,6 @@ public class GameState {
     }
 
   }
-
-
 
   /**
    * Executes a {@link mech.mania.engine.action.AttackAction}.
