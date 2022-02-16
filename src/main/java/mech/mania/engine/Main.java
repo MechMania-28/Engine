@@ -1,14 +1,14 @@
 package mech.mania.engine;
 
-import mech.mania.engine.networking.TestClient;
-import mech.mania.engine.networking.TurnServerSocket;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import mech.mania.engine.networking.Client;
+import mech.mania.engine.networking.Server;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
   public static void main(String[] args) {
@@ -25,28 +25,37 @@ public class Main {
     /*
     1. Create GameState
     2. For each turn of game,
-        a. execute use, move, ...
+        a. execute use, move, ...ser
         b. render turn
      */
+    //    final int maxTurns = 10;
+    //    GameState state = new GameState();
+    //    for (int i = 0; i < maxTurns; i++) {
+    //      state.executeUse(new UseAction());
+    //      state.executeMove(new MoveAction());
+    //      state.executeAttack(new AttackAction());
+    //      state.executeBuy(new BuyAction());
+    //    }
 
     Callable<String> server =
         () -> {
-          TurnServerSocket turnServer = new TurnServerSocket(27);
+          Server turnServer = new Server(27);
+          while (!turnServer.isStarted()) turnServer.start();
           turnServer.write("Hello.");
-          System.out.println("here!");
-          System.out.println("here!!");
           turnServer.write("Bye.");
-          System.out.println("here!!!");
-
+          turnServer.write(new GameTurn());
           return "Task's execution";
         };
 
     Callable<String> client =
         () -> {
-          TestClient testClient = new TestClient(27);
-          testClient.read();
-          System.out.println("here.");
-
+          Client testClient = new Client(27);
+          while (!testClient.isConnected()) testClient.connect();
+          System.out.println(testClient.read());
+          System.out.println(testClient.read());
+          String turn = testClient.read();
+          System.out.println(turn);
+          System.out.println(new GameTurn().equals(new ObjectMapper().readValue(turn, GameTurn.class)));
           return "Task's execution";
         };
 
@@ -61,7 +70,5 @@ public class Main {
       e.printStackTrace();
     }
     executor.shutdown();
-
-    System.out.println("here");
   }
 }
