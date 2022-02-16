@@ -21,10 +21,10 @@ public class MoveAction extends Action{
     public Position getPosition() {
         return new Position(this.getX_dest(), this.getY_dest());
     }
+
     public int getX_dest() {
         return x_dest;
     }
-
     public int getY_dest() {
         return y_dest;
     }
