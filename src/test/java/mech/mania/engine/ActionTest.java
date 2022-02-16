@@ -1,16 +1,16 @@
 package mech.mania.engine;
 import mech.mania.engine.GameState;
 import mech.mania.engine.player.PlayerState;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ActionTest {
 
     private PlayerState playerState;
 
-    @Before
+    @BeforeEach
     public void setup() {
         /*
         create a new player state with some default configurations.
