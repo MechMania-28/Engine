@@ -1,5 +1,6 @@
 package mech.mania.engine.action;
 
+
 import mech.mania.engine.player.Position;
 
 public class MoveAction extends Action{
@@ -27,5 +28,6 @@ public class MoveAction extends Action{
     public int getY_dest() {
         return y_dest;
     }
+
 
 }

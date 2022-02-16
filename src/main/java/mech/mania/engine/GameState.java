@@ -5,9 +5,11 @@ import mech.mania.engine.action.BuyAction;
 import mech.mania.engine.action.MoveAction;
 import mech.mania.engine.action.UseAction;
 import mech.mania.engine.player.PlayerState;
+
 import mech.mania.engine.player.Position;
 import mech.mania.engine.player.StatSet;
 import mech.mania.engine.Utility;
+
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +31,7 @@ public class GameState {
    *
    * @param moveAction The action to be executed.
    */
+
   public void executeMove(MoveAction moveAction) {
 
     // The intended destination of our move action
@@ -53,6 +56,7 @@ public class GameState {
     }
 
   }
+
 
 
   /**
