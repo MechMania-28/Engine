@@ -9,6 +9,7 @@ public class Position {
     this.y = y;
   }
 
+
   public int getX() {
     return x;
   }
@@ -23,5 +24,18 @@ public class Position {
 
   public void setY(int y) {
     this.y = y;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof Position)) {
+      return false;
+    }
+    Position p = (Position) obj;
+    // If the individual coordinates are the same
+    return ((this.getX() == p.getX()) && (this.getY() == p.getY()));
   }
 }
