@@ -23,4 +23,8 @@ public class PlayerState {
   public StatSet getEffectiveStatSet() {
     return characterClass.getStatSet().plus(item.getStatSet());
   }
+
+  public Position getPosition() {
+    return position;
+  }
 }

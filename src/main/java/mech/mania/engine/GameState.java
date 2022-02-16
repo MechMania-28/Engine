@@ -6,6 +6,11 @@ import mech.mania.engine.action.MoveAction;
 import mech.mania.engine.action.UseAction;
 import mech.mania.engine.player.PlayerState;
 
+import mech.mania.engine.player.Position;
+import mech.mania.engine.player.StatSet;
+import mech.mania.engine.Utility;
+
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,7 +31,33 @@ public class GameState {
    *
    * @param moveAction The action to be executed.
    */
-  public void executeMove(MoveAction moveAction) {}
+
+  public void executeMove(MoveAction moveAction) {
+
+    // The intended destination of our move action
+    int x_dest = moveAction.getX_dest();
+    int y_dest = moveAction.getY_dest();
+
+    // The player and stat set of said player that is attached to the action
+    PlayerState currentPlayer = playerStateList.get(moveAction.getExecutingPlayerIndex());
+    StatSet currentStatSet =  currentPlayer.getEffectiveStatSet();
+
+    // Get the speed and current position of the player executing the action
+    int speed = currentStatSet.getSpeed();
+    int x_pos = currentPlayer.getPosition().getX();
+    int y_pos = currentPlayer.getPosition().getY();
+
+    // Check if the move is valid
+    if ((Utility.inBounds(x_dest, y_dest)) && (speed >= Utility.manhattanDistance(x_pos, x_dest, y_pos, y_dest))) {
+
+      // If it is then finally we can execute the move
+      currentPlayer.getPosition().setX(x_dest);
+      currentPlayer.getPosition().setY(y_dest);
+    }
+
+  }
+
+
 
   /**
    * Executes a {@link mech.mania.engine.action.AttackAction}.
