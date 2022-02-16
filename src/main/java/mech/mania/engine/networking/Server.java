@@ -12,21 +12,19 @@ public class Server {
   private final int portNumber;
   private ServerSocket serverSocket;
   private Socket clientSocket;
-  private boolean started;
+  private boolean open;
 
-  public Server(int portNumber)  {
+  public Server(int portNumber) {
     this.portNumber = portNumber;
-    this.started = false;
+    this.open = false;
   }
 
-  /**
-   * Starts a server at the port number passed into the constructor.
-   */
-  public void start(){
+  /** Starts a server at the port number passed into the constructor. */
+  public void open() {
     try {
       this.serverSocket = new ServerSocket(portNumber);
       this.clientSocket = serverSocket.accept();
-      this.started = true;
+      this.open = true;
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -34,6 +32,7 @@ public class Server {
 
   /**
    * Writes an object as JSON into the server's output stream.
+   *
    * @param obj Object to be written.
    */
   public void write(Object obj) {
@@ -46,6 +45,7 @@ public class Server {
 
   /**
    * Writes a string into the server's output stream.
+   *
    * @param string String to be written.
    */
   public void write(String string) {
@@ -57,7 +57,16 @@ public class Server {
     }
   }
 
-  public boolean isStarted() {
-    return started;
+  public boolean isOpen() {
+    return open;
+  }
+
+  public void close() {
+    try {
+      serverSocket.close();
+      this.open = false;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }

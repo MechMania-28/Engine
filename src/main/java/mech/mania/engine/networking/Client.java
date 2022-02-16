@@ -15,31 +15,41 @@ public class Client {
     this.portNumber = portNumber;
   }
 
-  /**
-   * Connects to the server at the port number passed into the constructor.
-   */
-  public void connect(){
-      try {
-        this.socket = new Socket("localhost", portNumber);
-        this.in =
-            new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.connected = true;
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+  /** Connects to the server at the port number passed into the constructor. */
+  public void connect() {
+    try {
+      this.socket = new Socket("localhost", portNumber);
+      this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      this.connected = true;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
    * Reads a single line from a server at the port number passed into the constructor.
+   *
    * @return Line read from server.
    */
   public String read() {
     try {
       return in.readLine();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public void disconnect() {
+    if (!socket.isClosed()) {
+      try {
+        socket.close();
       } catch (IOException e) {
         e.printStackTrace();
+        return;
       }
-    return null;
+    }
+    this.connected = false;
   }
 
   public boolean isConnected() {
