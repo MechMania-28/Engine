@@ -40,15 +40,9 @@ public class ActionTest {
 
     }
 
-    @Test
-    public void sanityCheck() {
-        /* sanity check */
-        assertEquals(1+1,2);
-
-    }
 
     @Test
-    public void movementTest() {
+    public void moveInPlayerRange() {
         /*
         create and execute the moveAction on the player.
          */
@@ -68,28 +62,38 @@ public class ActionTest {
         assert player's position is your desired position after the movement.
          */
         assertEquals(actualPosition, destination);
+    }
 
+    @Test
+    public void moveOutPlayerRange() {
+
+        int playerIndex = 0;
 
         /*
         INVALID: test out of range move action
          */
-        destination = new Position(5, 0);
-        moveAction = new MoveAction(playerIndex, destination);
+        Position destination = new Position(5, 0);
+        MoveAction moveAction = new MoveAction(playerIndex, destination);
         gameState.executeMove(moveAction);
 
-        actualPosition = testPlayer.getPosition();
+        Position actualPosition = testPlayer.getPosition();
 
         assertNotEquals(actualPosition, destination);
+    }
+    @Test
+    public void moveOutBoardRange() {
 
+        int playerIndex = 0;
         /*
         INVALID: test out of board range move action
          */
-        destination = new Position(Config.BOARD_SIZE + 2, 0);
-        moveAction = new MoveAction(playerIndex, destination);
+        Position destination = new Position(Config.BOARD_SIZE + 2, 0);
+        MoveAction moveAction = new MoveAction(playerIndex, destination);
         gameState.executeMove(moveAction);
 
-        actualPosition = testPlayer.getPosition();
+        Position actualPosition = testPlayer.getPosition();
 
         assertNotEquals(actualPosition, destination);
+
     }
 }
