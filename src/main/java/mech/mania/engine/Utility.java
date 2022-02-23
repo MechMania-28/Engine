@@ -1,13 +1,14 @@
 package mech.mania.engine;
 
 import mech.mania.engine.Config;
+import mech.mania.engine.player.Position;
 
 public class Utility {
-    public static int manhattanDistance(int x0, int x1, int y0, int y1){
-        return Math.abs(x1 - x0) + Math.abs(y1 - y0);
+    public static int manhattanDistance(Position p1, Position p2){
+        return Math.abs(p1.getX() - p2.getX()) + Math.abs(p1.getY() - p2.getY());
     }
-    public static boolean inBounds(int x, int y){
+    public static boolean inBounds(Position p){
         /** Assume board runs from 0 to BOARD_SIZE - 1 */
-        return ((x >= 0) && ( x < Config.BOARD_SIZE) && (y >= 0) && (y < Config.BOARD_SIZE));
+        return ((p.getX() >= 0) && ( p.getX() < Config.BOARD_SIZE) && (p.getY() >= 0) && (p.getY() < Config.BOARD_SIZE));
     }
 }

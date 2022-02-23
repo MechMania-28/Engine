@@ -9,7 +9,6 @@ public class Position {
     this.y = y;
   }
 
-
   public int getX() {
     return x;
   }
@@ -24,6 +23,11 @@ public class Position {
 
   public void setY(int y) {
     this.y = y;
+  }
+
+  public void translate(Position destination) {
+    this.x = destination.getX();
+    this.y = destination.getY();
   }
 
   @Override
