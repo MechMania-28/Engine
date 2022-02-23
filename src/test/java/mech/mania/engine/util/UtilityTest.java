@@ -10,6 +10,8 @@ class UtilityTest {
   @Test
   void manhattanDistance() {
     Assertions.assertEquals(Utility.manhattanDistance(new Position(0, 0), new Position(3, 4)), 7);
+    Assertions.assertEquals(Utility.manhattanDistance(new Position(3, 4), new Position(0, 0)), 7);
+    Assertions.assertEquals(Utility.manhattanDistance(new Position(3, 4), new Position(3, 4)), 0);
   }
 
   @Test
