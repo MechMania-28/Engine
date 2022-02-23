@@ -15,6 +15,7 @@ public class GameEngine {
     this.state = new GameState();
     this.phase = GamePhaseType.USE;
     this.executed = Arrays.asList(new Boolean[4]);
+    Collections.fill(executed, Boolean.FALSE);
   }
 
   /**
