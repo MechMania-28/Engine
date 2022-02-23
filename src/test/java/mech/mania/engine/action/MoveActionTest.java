@@ -1,4 +1,5 @@
-package mech.mania.engine;
+package mech.mania.engine.action;
+import mech.mania.engine.Config;
 import mech.mania.engine.GameState;
 import mech.mania.engine.action.MoveAction;
 import mech.mania.engine.player.CharacterClass;
