@@ -8,7 +8,7 @@ import mech.mania.engine.player.PlayerState;
 
 import mech.mania.engine.player.Position;
 import mech.mania.engine.player.StatSet;
-import mech.mania.engine.Utility;
+import mech.mania.engine.util.Utility;
 
 
 import java.util.Arrays;
