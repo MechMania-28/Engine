@@ -6,12 +6,17 @@ public class PlayerState {
   private Item item;
   private Position position;
 
-  public void setItem(Item item) {
-    this.item = item;
+  public PlayerState(CharacterClass characterClass, Position position) {
+    this.characterClass = characterClass;
+    this.position = position;
   }
 
-  public void setPosition(Position position) {
-    this.position = position;
+  public PlayerState() {
+
+  }
+
+  public void setItem(Item item) {
+    this.item = item;
   }
 
   /**
@@ -21,7 +26,12 @@ public class PlayerState {
    * @return Effective StatSet.
    */
   public StatSet getEffectiveStatSet() {
-    return characterClass.getStatSet().plus(item.getStatSet());
+    if (item != null) {
+      return characterClass.getStatSet().plus(item.getStatSet());
+    }
+    else {
+      return characterClass.getStatSet();
+    }
   }
 
   public Position getPosition() {

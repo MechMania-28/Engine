@@ -19,6 +19,17 @@ public class GameState {
   /** Holds the {@link PlayerState} of each of the 4 players in player order. */
   private final List<PlayerState> playerStateList = Arrays.asList(new PlayerState[4]);
 
+  /** Constructor that takes a list of playerStates. */
+  public GameState(List<PlayerState> players) {
+    playerStateList.set(0, players.get(0));
+    playerStateList.set(1, players.get(1));
+    playerStateList.set(2, players.get(2));
+    playerStateList.set(3, players.get(3));
+  }
+
+  public PlayerState getPlayerStateByIndex(int index) {
+    return playerStateList.get(index);
+  }
   /**
    * Executes a {@link mech.mania.engine.action.UseAction}.
    *
@@ -35,8 +46,7 @@ public class GameState {
   public void executeMove(MoveAction moveAction) {
 
     // The intended destination of our move action
-    int x_dest = moveAction.getX_dest();
-    int y_dest = moveAction.getY_dest();
+    Position destination = moveAction.getPosition();
 
     // The player and stat set of said player that is attached to the action
     PlayerState currentPlayer = playerStateList.get(moveAction.getExecutingPlayerIndex());
@@ -44,20 +54,14 @@ public class GameState {
 
     // Get the speed and current position of the player executing the action
     int speed = currentStatSet.getSpeed();
-    int x_pos = currentPlayer.getPosition().getX();
-    int y_pos = currentPlayer.getPosition().getY();
 
     // Check if the move is valid
-    if ((Utility.inBounds(x_dest, y_dest)) && (speed >= Utility.manhattanDistance(x_pos, x_dest, y_pos, y_dest))) {
+    if ((Utility.inBounds(destination)) && (speed >= Utility.manhattanDistance(destination, currentPlayer.getPosition()))) {
 
       // If it is then finally we can execute the move
-      currentPlayer.getPosition().setX(x_dest);
-      currentPlayer.getPosition().setY(y_dest);
+      currentPlayer.getPosition().translate(destination);
     }
-
   }
-
-
 
   /**
    * Executes a {@link mech.mania.engine.action.AttackAction}.
