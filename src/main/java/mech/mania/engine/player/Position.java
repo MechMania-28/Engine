@@ -24,4 +24,22 @@ public class Position {
   public void setY(int y) {
     this.y = y;
   }
+
+  public void translate(Position destination) {
+    this.x = destination.getX();
+    this.y = destination.getY();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof Position)) {
+      return false;
+    }
+    Position p = (Position) obj;
+    // If the individual coordinates are the same
+    return ((this.getX() == p.getX()) & (this.getY() == p.getY()));
+  }
 }
