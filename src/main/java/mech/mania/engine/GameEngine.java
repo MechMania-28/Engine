@@ -11,8 +11,8 @@ public class GameEngine {
   private final List<Boolean> executed;
   private GamePhaseType phase;
 
-  public GameEngine() {
-    this.state = new GameState();
+  public GameEngine(int gamePort) {
+    this.gameState = new GameState(Arrays.asList(new PlayerState[4]));
     this.phase = GamePhaseType.USE;
     this.executed = Arrays.asList(new Boolean[4]);
     Collections.fill(executed, Boolean.FALSE);
