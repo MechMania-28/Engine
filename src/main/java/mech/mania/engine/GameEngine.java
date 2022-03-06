@@ -1,21 +1,78 @@
 package mech.mania.engine;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import mech.mania.engine.action.*;
+import mech.mania.engine.networking.CommState;
+import mech.mania.engine.networking.Server;
+import mech.mania.engine.player.CharacterClass;
+import mech.mania.engine.player.PlayerState;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameEngine {
-  private final GameState state;
+  private final GameState gameState;
   private final List<Boolean> executed;
+  private final Server gameServer;
   private GamePhaseType phase;
+  private CommState commState;
 
   public GameEngine(int gamePort) {
     this.gameState = new GameState(Arrays.asList(new PlayerState[4]));
     this.phase = GamePhaseType.USE;
     this.executed = Arrays.asList(new Boolean[4]);
     Collections.fill(executed, Boolean.FALSE);
+    gameServer = new Server(gamePort, 4);
+    this.commState = CommState.START;
+  }
+
+  public static void main(String[] args) throws IOException {
+    List<Integer> ports = Arrays.stream(args).map(Integer::valueOf).collect(Collectors.toList());
+    int enginePort = ports.get(0);
+
+    GameEngine engine = new GameEngine(enginePort);
+    while (!engine.gameServer.isOpen()) engine.gameServer.open();
+
+    while (engine.commState != CommState.END) {
+      switch (engine.commState) {
+        case START:
+          engine.gameServer.writeAll("wake");
+          engine.commState = CommState.NUM_ASSIGN;
+          break;
+        case NUM_ASSIGN:
+          // Wait for a single digit number.
+          for (int i = 0; i < 4; i++) {
+            engine.gameServer.write(String.valueOf(i),i);
+          }
+          engine.commState = CommState.CLASS_REPORT;
+          break;
+        case CLASS_REPORT:
+          List<String> reads = engine.gameServer.readAll();
+          for (String read : reads)
+            System.out.println(new ObjectMapper().readValue(read, CharacterClass.class));
+          engine.commState = CommState.IN_GAME;
+          break;
+        case IN_GAME:
+          //          engine.play();
+          engine.commState = CommState.END;
+          break;
+      }
+    }
+
+    engine.gameServer.writeAll("fin");
+    boolean end = false;
+    while (!end) {
+      List<String> reads = engine.gameServer.readAll();
+      end = true;
+      for (String read : reads)
+        if (!read.equals("fin")) {
+          end = false;
+          break;
+        }
+    }
   }
 
   /**
@@ -27,16 +84,16 @@ public class GameEngine {
     if (executed.get(action.getExecutingPlayerIndex())) return;
     switch (phase) {
       case USE:
-        state.executeUse((UseAction) action);
+        gameState.executeUse((UseAction) action);
         break;
       case MOVE:
-        state.executeMove((MoveAction) action);
+        gameState.executeMove((MoveAction) action);
         break;
       case ATTACK:
-        state.executeAttack((AttackAction) action);
+        gameState.executeAttack((AttackAction) action);
         break;
       case BUY:
-        state.executeBuy((BuyAction) action);
+        gameState.executeBuy((BuyAction) action);
         break;
     }
     executed.set(action.getExecutingPlayerIndex(), true);
@@ -53,8 +110,8 @@ public class GameEngine {
     this.phase = phase.next();
   }
 
-  public GameState getState() {
-    return state;
+  public GameState getGameState() {
+    return gameState;
   }
 
   public GamePhaseType getPhase() {
