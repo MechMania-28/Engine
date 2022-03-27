@@ -4,10 +4,11 @@ import mech.mania.engine.player.Item;
 
 public class BuyAction extends Action {
 
-  private Item item;
+  private final Item item;
 
-  public BuyAction(int executingPlayerIndex) {
+  public BuyAction(int executingPlayerIndex, Item item) {
     super(executingPlayerIndex);
+    this.item = item;
   }
 
   public Item getItem() {
