@@ -82,8 +82,6 @@ public class PlayerState {
    * @return Effective StatSet.
    */
   public StatSet computeEffectiveStatSet() {
-    if (item != null) {
-  public StatSet getEffectiveStatSet() {
     // Item is either permanent or the buff is still in effect
     if (this.effectTimer != 0) {
       return characterClass.getStatSet().plus(item.getStatSet());
@@ -92,7 +90,6 @@ public class PlayerState {
     else {
       return characterClass.getStatSet();
     }
-
   }
 
   public Position getPosition() {

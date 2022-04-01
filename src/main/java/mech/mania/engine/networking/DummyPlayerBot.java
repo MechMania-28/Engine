@@ -8,6 +8,7 @@ import mech.mania.engine.action.BuyAction;
 import mech.mania.engine.action.MoveAction;
 import mech.mania.engine.action.UseAction;
 import mech.mania.engine.player.CharacterClass;
+import mech.mania.engine.player.Item;
 import mech.mania.engine.player.Position;
 
 import java.io.IOException;
@@ -80,10 +81,10 @@ public class DummyPlayerBot {
       gameClient.write(action);
     }
     else if (gamePhase.type==GamePhaseType.ATTACK){
-      gameClient.write(new AttackAction(playerNum));
+      gameClient.write(new AttackAction(playerNum, 2));
     }
     else if (gamePhase.type==GamePhaseType.BUY)
-      gameClient.write(new BuyAction(playerNum));
+      gameClient.write(new BuyAction(playerNum, Item.ANEMOI_WINGS));
 
   }
 }
