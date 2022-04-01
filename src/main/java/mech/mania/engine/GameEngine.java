@@ -78,9 +78,11 @@ public class GameEngine {
   /**
    * Executes a given action as an action of the current phase state.
    *
-   * @param action Action to be executed.
+   * @param string Action to be executed as JSON.
    */
-  public void execute(Action action) {
+  public void execute(String string) throws IOException {
+    ObjectMapper mapper = new ObjectMapper();
+    Action action = mapper.readValue(string, Action.class);
     if (executed.get(action.getExecutingPlayerIndex())) return;
     switch (phaseType) {
       case USE:

@@ -1,11 +1,10 @@
 package mech.mania.engine;
 
-import mech.mania.engine.action.UseAction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.io.IOException;
 
 public class GameEngineTest {
 
@@ -17,11 +16,11 @@ public class GameEngineTest {
   }
 
   @Test
-  public void testPhaseChange() {
+  public void testPhaseChange() throws IOException {
     for (int i = 0; i < 4; i++) {
-      Assertions.assertEquals(engine.getPhase(), GamePhaseType.USE);
-      engine.execute(new UseAction(i));
+      Assertions.assertEquals(engine.getPhaseType(), GamePhaseType.USE);
+      engine.execute(String.format("{\"executingPlayerIndex\":%d}", i));
     }
-    Assertions.assertEquals(engine.getPhase(), GamePhaseType.MOVE);
+    Assertions.assertEquals(engine.getPhaseType(), GamePhaseType.MOVE);
   }
 }
