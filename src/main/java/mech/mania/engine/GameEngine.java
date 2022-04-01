@@ -14,17 +14,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GameEngine {
-  private final GameState gameState;
   private final List<Boolean> executed;
   private final Server gameServer;
-  private GamePhaseType phase;
+  private GameState gameState;
+  private GamePhaseType phaseType;
   private CommState commState;
 
   public GameEngine(int gamePort) {
-    this.gameState = new GameState(Arrays.asList(new PlayerState[4]));
-    this.phase = GamePhaseType.USE;
+    this.phaseType = GamePhaseType.USE;
     this.executed = Arrays.asList(new Boolean[4]);
     Collections.fill(executed, Boolean.FALSE);
+
     gameServer = new Server(gamePort, 4);
     this.commState = CommState.START;
   }
@@ -82,7 +82,7 @@ public class GameEngine {
    */
   public void execute(Action action) {
     if (executed.get(action.getExecutingPlayerIndex())) return;
-    switch (phase) {
+    switch (phaseType) {
       case USE:
         gameState.executeUse((UseAction) action);
         break;
@@ -102,19 +102,32 @@ public class GameEngine {
     // phase.
     if (executed.stream().allMatch(Boolean::valueOf)) {
       Collections.fill(executed, Boolean.FALSE);
-      this.phase = phase.next();
+      endPhase();
     }
   }
 
   public void endPhase() {
-    this.phase = phase.next();
+    this.phaseType = phaseType.next();
   }
 
   public GameState getGameState() {
     return gameState;
   }
 
-  public GamePhaseType getPhase() {
+  public GamePhaseType getPhaseType() {
+    return phaseType;
+  }
+
+  /**
+   * Compiles the most recent turn's executed actions for all 4 players.
+   *
+   * @return a GameTurn object representing the most recent turn.
+   */
+  public GamePhase renderPhase() {
+    GamePhase phase = new GamePhase();
+    phase.playerStates = gameState.getPlayerStateList();
+    System.out.println(phase.playerStates.get(0).getPosition().getX());
+    phase.type = phaseType;
     return phase;
   }
 }
