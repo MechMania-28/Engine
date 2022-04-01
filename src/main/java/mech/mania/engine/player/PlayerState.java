@@ -1,5 +1,9 @@
 package mech.mania.engine.player;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /** Represents the entire state of a Player. */
 public class PlayerState {
   @JsonProperty("class")
@@ -30,20 +34,20 @@ public class PlayerState {
     this.position = position;
   }
 
-  public void setItem(Item item) {
-    this.item = item;
-  }
-
   public Item getItem() {
     return this.item;
   }
 
-  public void setCharacterClass(CharacterClass characterClass) {
-    this.characterClass = characterClass;
+  public void setItem(Item item) {
+    this.item = item;
   }
 
   public CharacterClass getCharacterClass() {
     return this.characterClass;
+  }
+
+  public void setCharacterClass(CharacterClass characterClass) {
+    this.characterClass = characterClass;
   }
 
   public int getGold() {
@@ -51,11 +55,16 @@ public class PlayerState {
   }
 
   public void setGold(int amount) {
-    this.gold = amount;
+    gold = amount;
   }
 
   public void incrementGold(int amount) {
-    this.gold += amount;
+    gold += amount;
+  }
+
+  public void decrementGold(int amount) {
+    gold -= amount;
+    if (gold < 0) gold = 0;
   }
 
   public int getEffectTimer() {
@@ -66,23 +75,13 @@ public class PlayerState {
     this.effectTimer = effectTimer;
   }
 
-  public void decrementEffectTimer(int amount) {
-    this.effectTimer -= amount;
-  }
-
-  public int getCurrHealth() {
-    return currHealth;
-  }
-
-  public void setCurrHealth(int currHealth) {
-    this.currHealth = currHealth;
+  public void decrementEffectTimer() {
+    this.effectTimer --;
   }
 
   public void incrementCurrHealth(int amount) {
-    this.currHealth += amount;
-    if (currHealth > this.computeEffectiveStatSet().getMaxHealth()) {
-      this.setCurrHealth(this.computeEffectiveStatSet().getMaxHealth());
-    }
+    health += amount;
+    health %= computeEffectiveStatSet().getMaxHealth();
   }
 
   /**
@@ -108,5 +107,9 @@ public class PlayerState {
 
   public void setPosition(Position position) {
     this.position = position;
+  }
+
+  public void incrementScore() {
+    score++;
   }
 }

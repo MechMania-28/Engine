@@ -28,9 +28,9 @@ public class GameState {
   );
 
   /**
-   * Constructor that takes a list of playerStates.
+   * Constructor that takes a list of character classes for each of the players respectively.
    *
-   * @param playerClasses
+   * @param playerClasses List of character classes.
    */
   public GameState(List<CharacterClass> playerClasses) {
     for (int i = 0; i < 4; i++) {
@@ -55,7 +55,7 @@ public class GameState {
 
       // If players item is still in effect
       if (player.getEffectTimer() > 0) {
-        player.decrementEffectTimer(1);
+        player.decrementEffectTimer();
       }
 
       // If the players item has ran out
@@ -125,12 +125,17 @@ public class GameState {
 
     // If the current player has enough gold and is in their own spawnpoint.
     if ((currentPlayer.getGold() >= item.getCost()) && currentPlayer.getPosition().equals(spawnPoints.get(index))) {
-
       // Set the item and decrement the players gold
       currentPlayer.setItem(item);
-      currentPlayer.incrementGold(-1 * item.getCost());
+      currentPlayer.decrementGold(item.getCost());
     }
+  }
 
+  public void endTurn(){
+    for (PlayerState playerState: playerStateList) {
+        playerState.incrementGold(Config.GOLD_PER_TURN);
+//        if (Utility.onControlTile(playerState)) playerState.incrementScore();
+    }
   }
 
 }
