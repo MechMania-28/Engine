@@ -110,7 +110,7 @@ public class GameEngine {
       turnCount++;
       gameState.endTurn();
     }
-    if (turnCount == Config.TURNS) {
+    if (turnCount > Config.TURNS) {
       commState = CommState.END;
       return;
     }
@@ -136,6 +136,7 @@ public class GameEngine {
   public GamePhase renderPhase() {
     GamePhase phase = new GamePhase();
     phase.playerStates = gameState.getPlayerStateList();
+    phase.turn = turnCount;
     phase.prev_phase = phaseType;
     phase.next_phase = phaseType.next();
     return phase;
