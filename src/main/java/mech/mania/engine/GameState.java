@@ -4,11 +4,8 @@ import mech.mania.engine.action.AttackAction;
 import mech.mania.engine.action.BuyAction;
 import mech.mania.engine.action.MoveAction;
 import mech.mania.engine.action.UseAction;
-import mech.mania.engine.player.Item;
-import mech.mania.engine.player.PlayerState;
+import mech.mania.engine.player.*;
 
-import mech.mania.engine.player.Position;
-import mech.mania.engine.player.StatSet;
 import mech.mania.engine.util.Utility;
 
 
@@ -30,12 +27,15 @@ public class GameState {
           new Position(0, BOARD_SIZE-1)
   );
 
-  /** Constructor that takes a list of playerStates. */
-  public GameState(List<PlayerState> players) {
-    playerStateList.set(0, players.get(0));
-    playerStateList.set(1, players.get(1));
-    playerStateList.set(2, players.get(2));
-    playerStateList.set(3, players.get(3));
+  /**
+   * Constructor that takes a list of playerStates.
+   *
+   * @param playerClasses
+   */
+  public GameState(List<CharacterClass> playerClasses) {
+    for (int i = 0; i < 4; i++) {
+     playerStateList.set(i, new PlayerState(playerClasses.get(i), spawnPoints.get(i)));
+    }
   }
 
   public PlayerState getPlayerStateByIndex(int index) {

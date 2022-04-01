@@ -53,14 +53,14 @@ public class GameEngine {
           break;
         case CLASS_REPORT:
           List<String> reads = engine.gameServer.readAll();
-          List<PlayerState> playerStates = new ArrayList<>();
+          List<CharacterClass> playerClasses = new ArrayList<>();
           for (String read : reads) {
             CharacterClass characterClass =
                 new ObjectMapper().readValue(read, CharacterClass.class);
             System.out.println(characterClass);
-            playerStates.add(new PlayerState(characterClass, new Position(0, 0)));
+            playerClasses.add(characterClass);
           }
-          engine.gameState = new GameState(playerStates);
+          engine.gameState = new GameState(playerClasses);
           engine.commState = CommState.IN_GAME;
           break;
         case IN_GAME:
