@@ -60,7 +60,7 @@ public class GameState {
 
       // If the players item has ran out
       if (player.getEffectTimer() == 0) {
-        player.setItem(Item.NULL_ITEM);
+        player.setItem(Item.NONE);
         player.setEffectTimer(-1);
       }
     }

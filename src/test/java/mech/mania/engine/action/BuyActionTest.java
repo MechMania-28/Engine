@@ -12,7 +12,6 @@ import mech.mania.engine.player.Position;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-import static mech.mania.engine.Config.BOARD_SIZE;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -36,8 +35,8 @@ public class BuyActionTest {
 
         testP1 = gameState.getPlayerStateByIndex(0);
         testP2 = gameState.getPlayerStateByIndex(1);
-        testP1.setItem(Item.NULL_ITEM);
-        testP2.setItem(Item.NULL_ITEM);
+        testP1.setItem(Item.NONE);
+        testP2.setItem(Item.NONE);
     }
 
     @Test

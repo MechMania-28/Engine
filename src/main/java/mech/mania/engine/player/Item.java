@@ -62,7 +62,7 @@ public enum Item {
 
 
 
-  NULL_ITEM(new StatSet(0, 0, 0, 0), -1, 100) {
+  NONE(new StatSet(0, 0, 0, 0), -1, 100) {
     @Override
     public void affect(PlayerState player) {
       // Do nothing
@@ -78,10 +78,10 @@ public enum Item {
 
   /** Represents the duration of this item's effect
    * -1 means permanent, 0 means one time, positive means multiple turns*/
-  private int effectTimer;
+  private final int effectTimer;
 
   /** Represents the cost of the item */
-  private int cost;
+  private final int cost;
 
   Item(StatSet statSet, int itemTimer, int cost) {
     this.statSet = statSet;

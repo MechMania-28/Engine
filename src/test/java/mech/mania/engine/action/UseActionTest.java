@@ -8,11 +8,9 @@ import java.util.List;
 import mech.mania.engine.player.CharacterClass;
 import mech.mania.engine.player.Item;
 import mech.mania.engine.player.PlayerState;
-import mech.mania.engine.player.Position;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-import static mech.mania.engine.Config.BOARD_SIZE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UseActionTest {
@@ -37,8 +35,8 @@ public class UseActionTest {
 
         testP1 = gameState.getPlayerStateByIndex(0);
         testP2 = gameState.getPlayerStateByIndex(1);
-        testP1.setItem(Item.NULL_ITEM);
-        testP2.setItem(Item.NULL_ITEM);
+        testP1.setItem(Item.NONE);
+        testP2.setItem(Item.NONE);
 
     }
 
@@ -55,7 +53,7 @@ public class UseActionTest {
         gameState.updateItems();
 
         assertEquals(testP1.computeEffectiveStatSet().getDamage(), 6);
-        assertEquals(testP1.getItem(), Item.NULL_ITEM);
+        assertEquals(testP1.getItem(), Item.NONE);
 
     }
 
