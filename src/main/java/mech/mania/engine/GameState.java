@@ -30,6 +30,11 @@ public class GameState {
   public PlayerState getPlayerStateByIndex(int index) {
     return playerStateList.get(index);
   }
+
+  public List<PlayerState> getPlayerStateList() {
+    return playerStateList;
+  }
+
   /**
    * Executes a {@link mech.mania.engine.action.UseAction}.
    *
@@ -46,20 +51,19 @@ public class GameState {
   public void executeMove(MoveAction moveAction) {
 
     // The intended destination of our move action
-    Position destination = moveAction.getPosition();
+    Position destination = moveAction.getDestination();
 
     // The player and stat set of said player that is attached to the action
     PlayerState currentPlayer = playerStateList.get(moveAction.getExecutingPlayerIndex());
-    StatSet currentStatSet =  currentPlayer.getEffectiveStatSet();
+    StatSet currentStatSet =  currentPlayer.computeEffectiveStatSet();
 
     // Get the speed and current position of the player executing the action
     int speed = currentStatSet.getSpeed();
 
     // Check if the move is valid
     if ((Utility.inBounds(destination)) && (speed >= Utility.manhattanDistance(destination, currentPlayer.getPosition()))) {
-
       // If it is then finally we can execute the move
-      currentPlayer.getPosition().translate(destination);
+      currentPlayer.setPosition(destination);
     }
   }
 
@@ -77,12 +81,4 @@ public class GameState {
    */
   public void executeBuy(BuyAction buyAction) {}
 
-  /**
-   * Compiles the most recent turn's executed actions for all 4 players.
-   *
-   * @return a GameTurn object representing the most recent turn.
-   */
-  public GameTurn renderTurn() {
-    return new GameTurn();
-  }
 }

@@ -25,7 +25,7 @@ public class PlayerState {
    *
    * @return Effective StatSet.
    */
-  public StatSet getEffectiveStatSet() {
+  public StatSet computeEffectiveStatSet() {
     if (item != null) {
       return characterClass.getStatSet().plus(item.getStatSet());
     }
@@ -36,5 +36,9 @@ public class PlayerState {
 
   public Position getPosition() {
     return position;
+  }
+
+  public void setPosition(Position position) {
+    this.position = position;
   }
 }
