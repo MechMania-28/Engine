@@ -2,16 +2,30 @@ package mech.mania.engine.player;
 
 /** Represents the entire state of a Player. */
 public class PlayerState {
+  @JsonProperty("class")
   private CharacterClass characterClass;
-  private Item item = Item.NULL_ITEM;
+
+  @JsonProperty("item")
+  private Item item = Item.NONE;
+
+  @JsonProperty("position")
   private Position position;
 
+  @JsonProperty("gold")
   private int gold;
-  private int score;
-  private int effectTimer;
-  private int currHealth;
 
-  public PlayerState(CharacterClass characterClass, Position position) {
+  @JsonProperty("score")
+  private int score;
+
+  @JsonIgnore private int effectTimer;
+
+  @JsonProperty("health")
+  private int health;
+
+  @JsonCreator
+  public PlayerState(
+      @JsonProperty("class") CharacterClass characterClass,
+      @JsonProperty("position") Position position) {
     this.characterClass = characterClass;
     this.position = position;
   }
