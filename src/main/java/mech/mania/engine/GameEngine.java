@@ -6,8 +6,10 @@ import mech.mania.engine.networking.CommState;
 import mech.mania.engine.networking.Server;
 import mech.mania.engine.player.CharacterClass;
 import mech.mania.engine.player.PlayerState;
+import mech.mania.engine.player.Position;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +21,7 @@ public class GameEngine {
   private GameState gameState;
   private GamePhaseType phaseType;
   private CommState commState;
+  private int turnCount = 0;
 
   public GameEngine(int gamePort) {
     this.phaseType = GamePhaseType.USE;
@@ -43,21 +46,25 @@ public class GameEngine {
           engine.commState = CommState.NUM_ASSIGN;
           break;
         case NUM_ASSIGN:
-          // Wait for a single digit number.
           for (int i = 0; i < 4; i++) {
-            engine.gameServer.write(String.valueOf(i),i);
+            engine.gameServer.write(String.valueOf(i), i);
           }
           engine.commState = CommState.CLASS_REPORT;
           break;
         case CLASS_REPORT:
           List<String> reads = engine.gameServer.readAll();
-          for (String read : reads)
-            System.out.println(new ObjectMapper().readValue(read, CharacterClass.class));
+          List<PlayerState> playerStates = new ArrayList<>();
+          for (String read : reads) {
+            CharacterClass characterClass =
+                new ObjectMapper().readValue(read, CharacterClass.class);
+            System.out.println(characterClass);
+            playerStates.add(new PlayerState(characterClass, new Position(0, 0)));
+          }
+          engine.gameState = new GameState(playerStates);
           engine.commState = CommState.IN_GAME;
           break;
         case IN_GAME:
-          //          engine.play();
-          engine.commState = CommState.END;
+          engine.play();
           break;
       }
     }
@@ -73,6 +80,7 @@ public class GameEngine {
           break;
         }
     }
+    engine.gameServer.close();
   }
 
   /**
@@ -131,5 +139,16 @@ public class GameEngine {
     System.out.println(phase.playerStates.get(0).getPosition().getX());
     phase.type = phaseType;
     return phase;
+  }
+
+  public void play() throws IOException {
+    gameServer.writeAll(renderPhase());
+    List<String> reads = gameServer.readAll();
+    for (String read : reads) {
+      System.out.println(read);
+      execute(read);
+    }
+    if (phaseType == GamePhaseType.BUY) turnCount++;
+    if (turnCount == Config.TURNS) commState = CommState.END;
   }
 }

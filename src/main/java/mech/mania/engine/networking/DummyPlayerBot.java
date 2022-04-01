@@ -1,7 +1,16 @@
 package mech.mania.engine.networking;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import mech.mania.engine.GamePhase;
+import mech.mania.engine.GamePhaseType;
+import mech.mania.engine.action.AttackAction;
+import mech.mania.engine.action.BuyAction;
+import mech.mania.engine.action.MoveAction;
+import mech.mania.engine.action.UseAction;
 import mech.mania.engine.player.CharacterClass;
+import mech.mania.engine.player.Position;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -10,6 +19,7 @@ import java.util.stream.Collectors;
 public class DummyPlayerBot {
   private final Client gameClient;
   private CommState commState;
+  private int playerNum;
 
   public DummyPlayerBot(int gamePort) {
     this.gameClient = new Client(gamePort);
@@ -31,9 +41,7 @@ public class DummyPlayerBot {
           break;
         case NUM_ASSIGN:
           // Wait for a single digit number.
-          String read = bot.gameClient.read();
-          //          if (!read.matches("\\d")) continue;
-          System.out.println(read);
+          bot.playerNum = Integer.parseInt(bot.gameClient.read());
           bot.commState = CommState.CLASS_REPORT;
           break;
         case CLASS_REPORT:
@@ -42,15 +50,40 @@ public class DummyPlayerBot {
           bot.commState = CommState.IN_GAME;
           break;
         case IN_GAME:
-          bot.commState = CommState.END;
+          try {
+            bot.play();
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
           break;
       }
     }
 
-    while (!bot.gameClient.read().equals("fin")) continue;
     bot.gameClient.write("fin");
     bot.gameClient.disconnect();
   }
 
+  public void play() throws IOException {
+    String read = gameClient.read();
+    if (read.equals("fin")) {
+      commState = CommState.END;
+      return;
+    }
+    System.out.println(read);
+    GamePhase gamePhase = new ObjectMapper().readValue(read, GamePhase.class);
+    if (gamePhase.type == GamePhaseType.USE) {
+      UseAction action = new UseAction(playerNum);
+      gameClient.write(action);
+    }
+    else if (gamePhase.type == GamePhaseType.MOVE) {
+      MoveAction action = new MoveAction(playerNum, new Position(1,1));
+      gameClient.write(action);
+    }
+    else if (gamePhase.type==GamePhaseType.ATTACK){
+      gameClient.write(new AttackAction(playerNum));
+    }
+    else if (gamePhase.type==GamePhaseType.BUY)
+      gameClient.write(new BuyAction(playerNum));
 
+  }
 }
