@@ -5,8 +5,6 @@ import mech.mania.engine.action.*;
 import mech.mania.engine.networking.CommState;
 import mech.mania.engine.networking.Server;
 import mech.mania.engine.player.CharacterClass;
-import mech.mania.engine.player.PlayerState;
-import mech.mania.engine.player.Position;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GameEngine {
-  private final List<Boolean> executed;
   private final Server gameServer;
   private final GameLog log;
   private GameState gameState;
@@ -25,10 +22,7 @@ public class GameEngine {
   private int turnCount = 0;
 
   public GameEngine(int gamePort) {
-    this.phaseType = GamePhaseType.USE;
-    this.executed = Arrays.asList(new Boolean[4]);
-    Collections.fill(executed, Boolean.FALSE);
-
+    this.phaseType = GamePhaseType.BUY;
     gameServer = new Server(gamePort, 4);
     this.commState = CommState.START;
     log = new GameLog();
@@ -95,7 +89,6 @@ public class GameEngine {
   public void execute(String string) throws IOException {
     ObjectMapper mapper = new ObjectMapper();
     Action action = mapper.readValue(string, Action.class);
-    if (executed.get(action.getExecutingPlayerIndex())) return;
     switch (phaseType) {
       case USE:
         gameState.executeUse((UseAction) action);
@@ -110,17 +103,20 @@ public class GameEngine {
         gameState.executeBuy((BuyAction) action);
         break;
     }
-    executed.set(action.getExecutingPlayerIndex(), true);
-
-    // If all players have executed an Action for the current phase, reset and move to the next
-    // phase.
-    if (executed.stream().allMatch(Boolean::valueOf)) {
-      Collections.fill(executed, Boolean.FALSE);
-      endPhase();
-    }
   }
 
   public void endPhase() {
+    if (phaseType == GamePhaseType.BUY) {
+      turnCount++;
+      gameState.endTurn();
+    }
+    if (turnCount == Config.TURNS) {
+      commState = CommState.END;
+      return;
+    }
+    GamePhase phase = renderPhase();
+    gameServer.writeAll(phase);
+    log.addPhase(phase);
     this.phaseType = phaseType.next();
   }
 
@@ -146,13 +142,14 @@ public class GameEngine {
   }
 
   public void play() throws IOException {
-    gameServer.writeAll(renderPhase());
+    // If all players have executed an Action for the current phase, reset and move to the next
+    // phase.
+    endPhase();
+    if(commState==CommState.END) return;
     List<String> reads = gameServer.readAll();
     for (String read : reads) {
       System.out.println(read);
       execute(read);
     }
-    if (phaseType == GamePhaseType.BUY) turnCount++;
-    if (turnCount == Config.TURNS) commState = CommState.END;
   }
 }
