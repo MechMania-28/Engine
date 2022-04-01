@@ -25,13 +25,15 @@ public class UseActionTest {
     public void setup() {
         // Configure a default gameState
 
-        List<PlayerState> playerStateList = Arrays.asList(new PlayerState[4]);
-        playerStateList.set(0, new PlayerState(CharacterClass.KNIGHT, new Position(0, 0)));
-        playerStateList.set(1, new PlayerState(CharacterClass.ARCHER, new Position(BOARD_SIZE - 1, 0)));
-        playerStateList.set(2, new PlayerState());
-        playerStateList.set(3, new PlayerState());
+        List<CharacterClass> classes = Arrays.asList(new CharacterClass[4]);
+        classes.set(0, CharacterClass.KNIGHT);
+        classes.set(1, CharacterClass.ARCHER);
+        classes.set(2, CharacterClass.KNIGHT);
+        classes.set(3, CharacterClass.KNIGHT);
 
-        gameState = new GameState(playerStateList);
+
+
+        gameState = new GameState(classes);
 
         testP1 = gameState.getPlayerStateByIndex(0);
         testP2 = gameState.getPlayerStateByIndex(1);
@@ -47,12 +49,12 @@ public class UseActionTest {
         UseAction useAction = new UseAction(0);
         gameState.executeUse(useAction);
 
-        assertEquals(testP1.getEffectiveStatSet().getDamage(), 6 + 4); // Knight damage + strength potion damage
+        assertEquals(testP1.computeEffectiveStatSet().getDamage(), 6 + 4); // Knight damage + strength potion damage
 
         // Turn has ended
         gameState.updateItems();
 
-        assertEquals(testP1.getEffectiveStatSet().getDamage(), 6);
+        assertEquals(testP1.computeEffectiveStatSet().getDamage(), 6);
         assertEquals(testP1.getItem(), Item.NULL_ITEM);
 
     }
@@ -70,29 +72,29 @@ public class UseActionTest {
     public void usePermanent() {
         testP1.setItem(Item.ANEMOI_WINGS);
 
-        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 2); // Item hasn't set in yet from buying it last turn
+        assertEquals(testP1.computeEffectiveStatSet().getSpeed(), 2); // Item hasn't set in yet from buying it last turn
 
         // Test that multiple turns ending doesn't do anything
         // Turn 1:
         gameState.updateItems();
         assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
-        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4); // Knight speed + anemoi_wings buff
+        assertEquals(testP1.computeEffectiveStatSet().getSpeed(), 4); // Knight speed + anemoi_wings buff
 
         // Turn 2:
         gameState.updateItems();
         assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
-        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
+        assertEquals(testP1.computeEffectiveStatSet().getSpeed(), 4);
 
         // Test that using it doesn't do anything
         UseAction useAction = new UseAction(0);
         gameState.executeUse(useAction);
         assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
-        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
+        assertEquals(testP1.computeEffectiveStatSet().getSpeed(), 4);
 
         // Turn 3:
         gameState.updateItems();
         assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
-        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
+        assertEquals(testP1.computeEffectiveStatSet().getSpeed(), 4);
     }
 
 }

@@ -19,7 +19,10 @@ public class GameEngineTest {
   public void testPhaseChange() throws IOException {
     for (int i = 0; i < 4; i++) {
       Assertions.assertEquals(engine.getPhaseType(), GamePhaseType.USE);
-      engine.execute(String.format("{\"executingPlayerIndex\":%d}", i));
+      engine.execute(
+          String.format(
+              "{\"@class\":\"mech.mania.engine.action.UseAction\",\"executor\":%d}",
+              i));
     }
     Assertions.assertEquals(engine.getPhaseType(), GamePhaseType.MOVE);
   }

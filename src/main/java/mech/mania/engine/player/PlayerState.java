@@ -16,10 +16,6 @@ public class PlayerState {
     this.position = position;
   }
 
-  public PlayerState() {
-
-  }
-
   public void setItem(Item item) {
     this.item = item;
   }

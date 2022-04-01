@@ -25,12 +25,12 @@ public class MoveActionTest {
         Configure a default gameState
          */
 
-        List<PlayerState> playerStateList = Arrays.asList(new PlayerState[4]);
+        List<CharacterClass> playerStateList = Arrays.asList(new CharacterClass[4]);
 
-        playerStateList.set(0, new PlayerState(CharacterClass.KNIGHT, new Position(0, 0)));
-        playerStateList.set(1, new PlayerState());
-        playerStateList.set(2, new PlayerState());
-        playerStateList.set(3, new PlayerState());
+        playerStateList.set(0, CharacterClass.KNIGHT);
+        playerStateList.set(1, CharacterClass.KNIGHT);
+        playerStateList.set(2, CharacterClass.KNIGHT);
+        playerStateList.set(3, CharacterClass.KNIGHT);
 
         gameState = new GameState(playerStateList);
 
