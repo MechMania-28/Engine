@@ -1,15 +1,21 @@
 package mech.mania.engine.player;
 
-/**
- *
- */
-public class StatSet {
-  private int maxHealth;
-  private int damage;
-  private int speed;
-  private int range;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-  public StatSet(int maxHealth, int damage, int speed, int range) {
+/** */
+public class StatSet {
+  private final int maxHealth;
+  private final int damage;
+  private final int speed;
+  private final int range;
+
+  @JsonCreator
+  public StatSet(
+      @JsonProperty("max_health") int maxHealth,
+      @JsonProperty("damage") int damage,
+      @JsonProperty("speed") int speed,
+      @JsonProperty("range") int range) {
     this.maxHealth = maxHealth;
     this.damage = damage;
     this.speed = speed;
@@ -22,13 +28,12 @@ public class StatSet {
    * @param other The StatSet to be summed with this StatSet.
    * @return Sum StatSet.
    */
-  public StatSet plus(StatSet other){
+  public StatSet plus(StatSet other) {
     return new StatSet(
         this.maxHealth + other.maxHealth,
         this.damage + other.damage,
         this.speed + other.speed,
-        this.range + other.range
-    );
+        this.range + other.range);
   }
 
   public int getMaxHealth() {
