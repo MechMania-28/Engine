@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class GameEngine {
   private final List<Boolean> executed;
   private final Server gameServer;
+  private final GameLog log;
   private GameState gameState;
   private GamePhaseType phaseType;
   private CommState commState;
@@ -30,6 +31,7 @@ public class GameEngine {
 
     gameServer = new Server(gamePort, 4);
     this.commState = CommState.START;
+    log = new GameLog();
   }
 
   public static void main(String[] args) throws IOException {
@@ -81,6 +83,8 @@ public class GameEngine {
         }
     }
     engine.gameServer.close();
+
+    System.out.println(engine.log.render());
   }
 
   /**
