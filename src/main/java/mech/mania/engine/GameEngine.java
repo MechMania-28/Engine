@@ -136,8 +136,8 @@ public class GameEngine {
   public GamePhase renderPhase() {
     GamePhase phase = new GamePhase();
     phase.playerStates = gameState.getPlayerStateList();
-    System.out.println(phase.playerStates.get(0).getPosition().getX());
-    phase.type = phaseType;
+    phase.prev_phase = phaseType;
+    phase.next_phase = phaseType.next();
     return phase;
   }
 

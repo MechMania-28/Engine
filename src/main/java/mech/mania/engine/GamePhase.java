@@ -16,6 +16,9 @@ public class GamePhase {
   @JsonProperty("actions")
   public List<Action> actions = Arrays.asList(new Action[4]);
 
-  @JsonProperty("type")
-  public GamePhaseType type;
+  @JsonProperty("prev_phase")
+  public GamePhaseType prev_phase;
+
+  @JsonProperty("next_phase")
+  public GamePhaseType next_phase;
 }

@@ -72,18 +72,18 @@ public class DummyPlayerBot {
     }
     System.out.println(read);
     GamePhase gamePhase = new ObjectMapper().readValue(read, GamePhase.class);
-    if (gamePhase.type == GamePhaseType.USE) {
+    if (gamePhase.next_phase == GamePhaseType.USE) {
       UseAction action = new UseAction(playerNum);
       gameClient.write(action);
     }
-    else if (gamePhase.type == GamePhaseType.MOVE) {
+    else if (gamePhase.next_phase == GamePhaseType.MOVE) {
       MoveAction action = new MoveAction(playerNum, new Position(1,1));
       gameClient.write(action);
     }
-    else if (gamePhase.type==GamePhaseType.ATTACK){
+    else if (gamePhase.next_phase==GamePhaseType.ATTACK){
       gameClient.write(new AttackAction(playerNum, 2));
     }
-    else if (gamePhase.type==GamePhaseType.BUY)
+    else if (gamePhase.next_phase==GamePhaseType.BUY)
       gameClient.write(new BuyAction(playerNum, Item.ANEMOI_WINGS));
 
   }
