@@ -73,7 +73,7 @@ public class GameState {
    */
   public void executeUse(UseAction useAction) {
     PlayerState currentPlayer = getPlayerStateByIndex(useAction.getExecutingPlayerIndex());
-    currentPlayer.getItem().effect(currentPlayer);
+    currentPlayer.getItem().affect(currentPlayer);
   }
 
   /**
