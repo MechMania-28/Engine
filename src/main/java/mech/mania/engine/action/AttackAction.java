@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AttackAction extends Action {
+    @JsonProperty("target")
     private int targetPlayerIndex;
 
     @JsonCreator
