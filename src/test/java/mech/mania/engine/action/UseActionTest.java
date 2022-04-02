@@ -44,7 +44,7 @@ public class UseActionTest {
     /* Test a player using a consumable item */
     public void useConsumable() {
         testP1.setItem(Item.STRENGTH_POTION);
-        UseAction useAction = new UseAction(0);
+        UseAction useAction = new UseAction(0, false);
         gameState.executeUse(useAction);
 
         assertEquals(testP1.computeEffectiveStatSet().getDamage(), 6 + 4); // Knight damage + strength potion damage
@@ -61,7 +61,7 @@ public class UseActionTest {
     /* Use class change */
     public void useClassChange() {
         testP1.setItem(Item.STEEL_TIPPED_ARROW);
-        UseAction useAction = new UseAction(0);
+        UseAction useAction = new UseAction(0, false);
         gameState.executeUse(useAction);
         assertEquals(testP1.getCharacterClass(), CharacterClass.ARCHER);
     }
@@ -84,7 +84,7 @@ public class UseActionTest {
         assertEquals(testP1.computeEffectiveStatSet().getSpeed(), 4);
 
         // Test that using it doesn't do anything
-        UseAction useAction = new UseAction(0);
+        UseAction useAction = new UseAction(0, false);
         gameState.executeUse(useAction);
         assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
         assertEquals(testP1.computeEffectiveStatSet().getSpeed(), 4);

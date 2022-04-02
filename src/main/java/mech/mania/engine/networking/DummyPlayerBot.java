@@ -73,7 +73,7 @@ public class DummyPlayerBot {
     System.out.println(read);
     GamePhase gamePhase = new ObjectMapper().readValue(read, GamePhase.class);
     if (gamePhase.next_phase == GamePhaseType.USE) {
-      UseAction action = new UseAction(playerNum);
+      UseAction action = new UseAction(playerNum, false);
       gameClient.write(action);
     }
     else if (gamePhase.next_phase == GamePhaseType.MOVE) {
