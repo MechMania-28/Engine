@@ -16,13 +16,18 @@ import java.util.stream.Collectors;
 public class GameEngine {
   private final Server gameServer;
   private final GameLog log;
+  public List<UseAction> uses = Arrays.asList(new UseAction[4]);
+  public List<MoveAction> moves = Arrays.asList(new MoveAction[4]);
+  public List<AttackAction> attacks = Arrays.asList(new AttackAction[4]);
+  public List<BuyAction> buys = Arrays.asList(new BuyAction[4]);
   private GameState gameState;
   private GamePhaseType phaseType;
   private CommState commState;
   private int turnCount = 0;
+  private List<Action> lastActions= Arrays.asList(new Action[4]);
 
   public GameEngine(int gamePort) {
-    this.phaseType = GamePhaseType.BUY;
+    this.phaseType = null;
     gameServer = new Server(gamePort, 4);
     this.commState = CommState.START;
     log = new GameLog();
@@ -57,6 +62,7 @@ public class GameEngine {
             playerClasses.add(characterClass);
           }
           engine.gameState = new GameState(playerClasses);
+          engine.start();
           engine.commState = CommState.IN_GAME;
           break;
         case IN_GAME:
@@ -66,15 +72,14 @@ public class GameEngine {
     }
 
     engine.gameServer.writeAll("fin");
-    boolean end = false;
-    while (!end) {
+    List<Boolean> ended = Arrays.asList(false, false, false, false);
+    while (!ended.stream().allMatch(val->val=true)) {
       List<String> reads = engine.gameServer.readAll();
-      end = true;
-      for (String read : reads)
-        if (!read.equals("fin")) {
-          end = false;
-          break;
+      for (int i = 0; i < 4; i++) {
+        if (reads.get(i).equals("fin")) {
+          ended.set(i, true);
         }
+      }
     }
     engine.gameServer.close();
 
@@ -92,23 +97,50 @@ public class GameEngine {
     switch (phaseType) {
       case USE:
         gameState.executeUse((UseAction) action);
+        uses.set(action.getExecutingPlayerIndex(), (UseAction) action);
         break;
       case MOVE:
         gameState.executeMove((MoveAction) action);
+        moves.set(action.getExecutingPlayerIndex(), (MoveAction) action);
         break;
       case ATTACK:
         gameState.executeAttack((AttackAction) action);
+        attacks.set(action.getExecutingPlayerIndex(), (AttackAction) action);
         break;
       case BUY:
         gameState.executeBuy((BuyAction) action);
+        buys.set(action.getExecutingPlayerIndex(), (BuyAction) action);
         break;
     }
+    lastActions.set(action.getExecutingPlayerIndex(), action);
   }
 
-  public void endPhase() {
+  private void start(){
+    endTurn();
+    phaseType = GamePhaseType.USE;
+    GamePhase phase = new GamePhase();
+    Collections.copy(phase.playerStates, gameState.getPlayerStateList());
+    phase.lastActions = null;
+    phase.turn = turnCount;
+    phase.prev_phase = null;
+    phase.next_phase = GamePhaseType.USE;
+    gameServer.writeAll(phase);
+  }
+
+  private void endTurn() {
+    gameState.endTurn();
+    GameTurn turn = renderTurn();
+    log.addTurn(turn);
+    turnCount++;
+//    uses = Arrays.asList(new UseAction[4]);
+//    moves = Arrays.asList(new MoveAction[4]);
+//    attacks = Arrays.asList(new AttackAction[4]);
+//    buys = Arrays.asList(new BuyAction[4]);
+  }
+
+  private void endPhase() {
     if (phaseType == GamePhaseType.BUY) {
-      turnCount++;
-      gameState.endTurn();
+      endTurn();
     }
     if (turnCount > Config.TURNS) {
       commState = CommState.END;
@@ -116,8 +148,17 @@ public class GameEngine {
     }
     GamePhase phase = renderPhase();
     gameServer.writeAll(phase);
-    log.addPhase(phase);
     this.phaseType = phaseType.next();
+  }
+
+  private GamePhase renderPhase() {
+    GamePhase phase = new GamePhase();
+    Collections.copy(phase.playerStates, gameState.getPlayerStateList());
+    phase.lastActions = lastActions;
+    phase.turn = turnCount;
+    phase.prev_phase = phaseType;
+    phase.next_phase = phaseType.next();
+    return phase;
   }
 
   public GameState getGameState() {
@@ -133,24 +174,26 @@ public class GameEngine {
    *
    * @return a GameTurn object representing the most recent turn.
    */
-  public GamePhase renderPhase() {
-    GamePhase phase = new GamePhase();
-    phase.playerStates = gameState.getPlayerStateList();
-    phase.turn = turnCount;
-    phase.prev_phase = phaseType;
-    phase.next_phase = phaseType.next();
-    return phase;
+  public GameTurn renderTurn() {
+    GameTurn turn = new GameTurn();
+    Collections.copy(turn.playerStates, gameState.getPlayerStateList());
+    Collections.copy(turn.uses, uses);
+    Collections.copy(turn.moves, moves);
+    Collections.copy(turn.attacks, attacks);
+    Collections.copy(turn.buys, buys);
+    turn.turn = turnCount;
+    return turn;
   }
 
   public void play() throws IOException {
     // If all players have executed an Action for the current phase, reset and move to the next
     // phase.
-    endPhase();
-    if(commState==CommState.END) return;
+    if (commState == CommState.END) return;
     List<String> reads = gameServer.readAll();
     for (String read : reads) {
       System.out.println(read);
       execute(read);
     }
+    endPhase();
   }
 }
