@@ -7,12 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameLog {
-  private List<GamePhase> phases  = new ArrayList<>();
-  public void addPhase(GamePhase phase){
-    phases.add(phase);
+  private List<String> turns = new ArrayList<>();
+  public void addTurn(GameTurn turn){
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      turns.add(mapper.writeValueAsString(turn));
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
   }
   public String render() throws JsonProcessingException {
-    ObjectMapper mapper = new ObjectMapper();
-    return mapper.writeValueAsString(phases);
+    return "["+String.join("," ,turns)+"]";
   }
 }
