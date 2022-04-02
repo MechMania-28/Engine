@@ -14,6 +14,7 @@ public class PlayerState {
   public PlayerState(CharacterClass characterClass, Position position) {
     this.characterClass = characterClass;
     this.position = position;
+    this.currHealth = characterClass.getStatSet().getMaxHealth();
   }
 
   public PlayerState() {
@@ -71,7 +72,10 @@ public class PlayerState {
   public void incrementCurrHealth(int amount) {
     this.currHealth += amount;
     if (currHealth > this.getEffectiveStatSet().getMaxHealth()) {
-      this.setCurrHealth(this.getEffectiveStatSet().getMaxHealth());
+      this.currHealth = this.getEffectiveStatSet().getMaxHealth();
+    }
+    if (currHealth < 0) {
+      this.currHealth = 0;
     }
   }
 
