@@ -15,6 +15,12 @@ class UtilityTest {
   }
 
   @Test
+  void squareDistance() {
+    Assertions.assertEquals(Utility.squareDistance(new Position(0, 0), new Position(1, 1)), 1);
+    Assertions.assertEquals(Utility.squareDistance(new Position(0, 0), new Position(2, 1)), 2);
+    Assertions.assertEquals(Utility.squareDistance(new Position(1, 2), new Position(0, 0)), 2);
+  }
+  @Test
   void inBounds() {
     Assertions.assertTrue(Utility.inBounds(new Position(0,0)));
     Assertions.assertTrue(Utility.inBounds(new Position(Config.BOARD_SIZE - 1,Config.BOARD_SIZE-1)));
