@@ -4,11 +4,8 @@ import mech.mania.engine.action.AttackAction;
 import mech.mania.engine.action.BuyAction;
 import mech.mania.engine.action.MoveAction;
 import mech.mania.engine.action.UseAction;
-import mech.mania.engine.player.Item;
-import mech.mania.engine.player.PlayerState;
+import mech.mania.engine.player.*;
 
-import mech.mania.engine.player.Position;
-import mech.mania.engine.player.StatSet;
 import mech.mania.engine.util.Utility;
 
 
@@ -107,7 +104,25 @@ public class GameState {
    *
    * @param attackAction The action to be executed.
    */
-  public void executeAttack(AttackAction attackAction) {}
+  public void executeAttack(AttackAction attackAction) {
+
+    PlayerState actor = getPlayerStateByIndex(attackAction.getExecutingPlayerIndex());
+    PlayerState target = getPlayerStateByIndex(attackAction.getTargetPlayerIndex());
+    int range = actor.getEffectiveStatSet().getRange();
+    int damage = actor.getEffectiveStatSet().getDamage();
+
+    // Check if in range and if target isn't itself
+    if (range >= Utility.squareDistance(actor.getPosition(), target.getPosition()) && (actor != target)) {
+      // PROCRUSTEAN_IRON check
+      if (target.getItem() == Item.PROCRUSTEAN_IRON) {
+        target.incrementCurrHealth(-1 * CharacterClass.WIZARD.getStatSet().getDamage());
+      }
+      else {
+        target.incrementCurrHealth(-1 * damage);
+      }
+    }
+    // If not in range, then nothing happens
+  }
 
   /**
    * Executes a {@link mech.mania.engine.action.BuyAction}.

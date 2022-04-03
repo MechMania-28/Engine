@@ -15,4 +15,8 @@ public class Utility {
         && (p.getY() >= 0)
         && (p.getY() < Config.BOARD_SIZE));
   }
+
+  public static int squareDistance(Position p1, Position p2) {
+    return Math.max(Math.abs(p1.getX()-p2.getX()), Math.abs(p1.getY()- p2.getY()));
+  }
 }
