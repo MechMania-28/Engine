@@ -61,6 +61,7 @@ public class AttackActionTest {
     /* Test a player attacking out of range */
     public void outOfRangeTest() {
         // Create new AttackAction
+        testP1.getPosition().translate(new Position(BOARD_SIZE-1, BOARD_SIZE-1));
         AttackAction attackAction = new AttackAction(0, 1);
         gameState.executeAttack(attackAction);
         assertEquals(testP2.getCurrHealth(), testP2.getEffectiveStatSet().getMaxHealth());
