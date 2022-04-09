@@ -47,12 +47,12 @@ public class UseActionTest {
         UseAction useAction = new UseAction(0, false);
         gameState.executeUse(useAction);
 
-        assertEquals(testP1.computeEffectiveStatSet().getDamage(), 6 + 4); // Knight damage + strength potion damage
+        assertEquals(testP1.getEffectiveStatSet().getDamage(), 6 + 4); // Knight damage + strength potion damage
 
         // Turn has ended
         gameState.updateItems();
 
-        assertEquals(testP1.computeEffectiveStatSet().getDamage(), 6);
+        assertEquals(testP1.getEffectiveStatSet().getDamage(), 6);
         assertEquals(testP1.getItem(), Item.NONE);
 
     }
@@ -70,29 +70,29 @@ public class UseActionTest {
     public void usePermanent() {
         testP1.setItem(Item.ANEMOI_WINGS);
 
-        assertEquals(testP1.computeEffectiveStatSet().getSpeed(), 2); // Item hasn't set in yet from buying it last turn
+        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 2); // Item hasn't set in yet from buying it last turn
 
         // Test that multiple turns ending doesn't do anything
         // Turn 1:
         gameState.updateItems();
         assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
-        assertEquals(testP1.computeEffectiveStatSet().getSpeed(), 4); // Knight speed + anemoi_wings buff
+        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4); // Knight speed + anemoi_wings buff
 
         // Turn 2:
         gameState.updateItems();
         assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
-        assertEquals(testP1.computeEffectiveStatSet().getSpeed(), 4);
+        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
 
         // Test that using it doesn't do anything
         UseAction useAction = new UseAction(0, false);
         gameState.executeUse(useAction);
         assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
-        assertEquals(testP1.computeEffectiveStatSet().getSpeed(), 4);
+        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
 
         // Turn 3:
         gameState.updateItems();
         assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
-        assertEquals(testP1.computeEffectiveStatSet().getSpeed(), 4);
+        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
     }
 
 }

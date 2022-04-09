@@ -2,9 +2,11 @@ package mech.mania.engine.player;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Represents the entire state of a Player. */
+@JsonIgnoreProperties({"effectiveStatSet"})
 public class PlayerState {
   @JsonProperty("class")
   private CharacterClass characterClass;
@@ -32,7 +34,7 @@ public class PlayerState {
       @JsonProperty("position") Position position) {
     this.characterClass = characterClass;
     this.position = position;
-    this.currHealth = characterClass.getStatSet().getMaxHealth();
+    this.health = characterClass.getStatSet().getMaxHealth();
   }
 
   public Item getItem() {
@@ -82,12 +84,12 @@ public class PlayerState {
 
   public void incrementCurrHealth(int amount) {
 
-    this.currHealth += amount;
-    if (currHealth > this.getEffectiveStatSet().getMaxHealth()) {
-      this.currHealth = this.getEffectiveStatSet().getMaxHealth();
+    this.health += amount;
+    if (health > this.getEffectiveStatSet().getMaxHealth()) {
+      this.health = this.getEffectiveStatSet().getMaxHealth();
     }
-    if (currHealth < 0) {
-      this.currHealth = 0;
+    if (health < 0) {
+      this.health = 0;
     }
 
   }
@@ -98,7 +100,7 @@ public class PlayerState {
    *
    * @return Effective StatSet.
    */
-  public StatSet computeEffectiveStatSet() {
+  public StatSet getEffectiveStatSet() {
     // Item is either permanent or the buff is still in effect
     if (this.effectTimer != 0) {
       return characterClass.getStatSet().plus(item.getStatSet());

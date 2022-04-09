@@ -94,7 +94,7 @@ public class GameState {
 
     // The player and stat set of said player that is attached to the action
     PlayerState currentPlayer = getPlayerStateByIndex(moveAction.getExecutingPlayerIndex());
-    StatSet currentStatSet =  currentPlayer.computeEffectiveStatSet();
+    StatSet currentStatSet =  currentPlayer.getEffectiveStatSet();
 
     // Get the speed and current position of the player executing the action
     int speed = currentStatSet.getSpeed();
