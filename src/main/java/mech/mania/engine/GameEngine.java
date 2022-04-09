@@ -5,6 +5,7 @@ import mech.mania.engine.action.*;
 import mech.mania.engine.networking.CommState;
 import mech.mania.engine.networking.Server;
 import mech.mania.engine.player.CharacterClass;
+import mech.mania.engine.player.PlayerState;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -167,6 +168,30 @@ public class GameEngine {
         return phase;
     }
 
+    private String printBoard() {
+        String s = "";
+        for (int i = 0; i < Config.BOARD_SIZE; i++) {
+            for (int j = 0; j < Config.BOARD_SIZE; j++) {
+
+                int idx = 0;
+                boolean found = false;
+                for (PlayerState playerState : gameState.getPlayerStateList()) {
+                    if (playerState.getPosition().getX() == i && playerState.getPosition().getY() == j) {
+                        s += idx;
+                        found = true;
+                        continue;
+                    }
+                    idx++;
+                }
+                if (!found)
+                    s += '.';
+
+            }
+            s += '\n';
+        }
+        return s;
+    }
+
     public GameState getGameState() {
         return gameState;
     }
@@ -196,6 +221,7 @@ public class GameEngine {
         // phase.
         if (commState == CommState.END) return;
         List<String> reads = gameServer.readAll();
+        System.out.print(printBoard());
         for (String read : reads) {
             System.out.println(read);
             execute(read);
