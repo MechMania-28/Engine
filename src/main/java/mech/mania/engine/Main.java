@@ -28,7 +28,7 @@ public class Main {
     /*
     1. Create GameState
     2. For each turn of game,
-        a. execute use, move, ...
+        a. execute use, move, attack, buy, update items...
         b. render turn
      */
   }
