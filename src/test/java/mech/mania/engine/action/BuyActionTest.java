@@ -12,7 +12,6 @@ import mech.mania.engine.player.Position;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-import static mech.mania.engine.Config.BOARD_SIZE;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -26,18 +25,18 @@ public class BuyActionTest {
     public void setup() {
         // Configure a default gameState
 
-        List<PlayerState> playerStateList = Arrays.asList(new PlayerState[4]);
-        playerStateList.set(0, new PlayerState(CharacterClass.KNIGHT, new Position(0, 0)));
-        playerStateList.set(1, new PlayerState(CharacterClass.ARCHER, new Position(BOARD_SIZE-1, 0)));
-        playerStateList.set(2, new PlayerState());
-        playerStateList.set(3, new PlayerState());
+        List<CharacterClass> playerStateList = Arrays.asList(new CharacterClass[4]);
+        playerStateList.set(0, CharacterClass.KNIGHT);
+        playerStateList.set(1, CharacterClass.ARCHER);
+        playerStateList.set(2, CharacterClass.KNIGHT);
+        playerStateList.set(3, CharacterClass.KNIGHT);
 
         gameState = new GameState(playerStateList);
 
         testP1 = gameState.getPlayerStateByIndex(0);
         testP2 = gameState.getPlayerStateByIndex(1);
-        testP1.setItem(Item.NULL_ITEM);
-        testP2.setItem(Item.NULL_ITEM);
+        testP1.setItem(Item.NONE);
+        testP2.setItem(Item.NONE);
     }
 
     @Test

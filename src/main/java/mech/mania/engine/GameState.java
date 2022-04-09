@@ -27,12 +27,15 @@ public class GameState {
           new Position(0, BOARD_SIZE-1)
   );
 
-  /** Constructor that takes a list of playerStates. */
-  public GameState(List<PlayerState> players) {
-    playerStateList.set(0, players.get(0));
-    playerStateList.set(1, players.get(1));
-    playerStateList.set(2, players.get(2));
-    playerStateList.set(3, players.get(3));
+  /**
+   * Constructor that takes a list of character classes for each of the players respectively.
+   *
+   * @param playerClasses List of character classes.
+   */
+  public GameState(List<CharacterClass> playerClasses) {
+    for (int i = 0; i < 4; i++) {
+     playerStateList.set(i, new PlayerState(playerClasses.get(i), spawnPoints.get(i)));
+    }
   }
 
   public PlayerState getPlayerStateByIndex(int index) {
@@ -52,15 +55,20 @@ public class GameState {
 
       // If players item is still in effect
       if (player.getEffectTimer() > 0) {
-        player.decrementEffectTimer(1);
+        player.decrementEffectTimer();
       }
 
       // If the players item has ran out
       if (player.getEffectTimer() == 0) {
-        player.setItem(Item.NULL_ITEM);
+        player.setItem(Item.NONE);
         player.setEffectTimer(-1);
       }
     }
+  }
+
+
+  public List<PlayerState> getPlayerStateList() {
+    return playerStateList;
   }
 
   /**
@@ -82,20 +90,19 @@ public class GameState {
   public void executeMove(MoveAction moveAction) {
 
     // The intended destination of our move action
-    Position destination = moveAction.getPosition();
+    Position destination = moveAction.getDestination();
 
     // The player and stat set of said player that is attached to the action
     PlayerState currentPlayer = getPlayerStateByIndex(moveAction.getExecutingPlayerIndex());
-    StatSet currentStatSet =  currentPlayer.getEffectiveStatSet();
+    StatSet currentStatSet =  currentPlayer.computeEffectiveStatSet();
 
     // Get the speed and current position of the player executing the action
     int speed = currentStatSet.getSpeed();
 
     // Check if the move is valid
     if ((Utility.inBounds(destination)) && (speed >= Utility.manhattanDistance(destination, currentPlayer.getPosition()))) {
-
       // If it is then finally we can execute the move
-      currentPlayer.getPosition().translate(destination);
+      currentPlayer.setPosition(destination);
     }
   }
 
@@ -136,20 +143,17 @@ public class GameState {
 
     // If the current player has enough gold and is in their own spawnpoint.
     if ((currentPlayer.getGold() >= item.getCost()) && currentPlayer.getPosition().equals(spawnPoints.get(index))) {
-
       // Set the item and decrement the players gold
       currentPlayer.setItem(item);
-      currentPlayer.incrementGold(-1 * item.getCost());
+      currentPlayer.decrementGold(item.getCost());
     }
-
   }
 
-  /**
-   * Compiles the most recent turn's executed actions for all 4 players.
-   *
-   * @return a GameTurn object representing the most recent turn.
-   */
-  public GameTurn renderTurn() {
-    return new GameTurn();
+  public void endTurn(){
+    for (PlayerState playerState: playerStateList) {
+        playerState.incrementGold(Config.GOLD_PER_TURN);
+//        if (Utility.onControlTile(playerState)) playerState.incrementScore();
+    }
   }
+
 }

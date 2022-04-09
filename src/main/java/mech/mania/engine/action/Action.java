@@ -1,10 +1,18 @@
 package mech.mania.engine.action;
 
-public abstract class Action {
-  private int executingPlayerIndex;
 
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-  public Action(int executingPlayerIndex) {
+//@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
+//@JsonDeserialize(as = UseAction.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Action {
+  @JsonProperty("executor")
+  private final int executingPlayerIndex;
+
+  @JsonCreator
+  public Action(@JsonProperty("executor")int executingPlayerIndex) {
     this.executingPlayerIndex = executingPlayerIndex;
   }
   public int getExecutingPlayerIndex() {

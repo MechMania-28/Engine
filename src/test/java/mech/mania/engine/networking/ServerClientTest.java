@@ -30,7 +30,7 @@ public class ServerClientTest {
   public void testLifeCycle() {
     Callable<String> server =
         () -> {
-          Server turnServer = new Server(27);
+          Server turnServer = new Server(27, 1);
           while (!turnServer.isOpen()) turnServer.open();
           turnServer.close();
           assertFalse(turnServer.isOpen());
@@ -54,9 +54,9 @@ public class ServerClientTest {
   public void testWriteString() {
     Callable<String> server =
         () -> {
-          Server turnServer = new Server(27);
+          Server turnServer = new Server(27,1 );
           while (!turnServer.isOpen()) turnServer.open();
-          turnServer.write("Hello.");
+          turnServer.writeAll("Hello.");
           turnServer.close();
           return "Task's execution";
         };
