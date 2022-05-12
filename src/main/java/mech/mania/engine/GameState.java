@@ -118,6 +118,9 @@ public class GameState {
     int range = actor.getEffectiveStatSet().getRange();
     int damage = actor.getEffectiveStatSet().getDamage();
 
+    /*add damage figures to attackaction.*/
+    attackAction.setDamage(damage);
+
     // Check if in range and if target isn't itself
     if (range >= Utility.squareDistance(actor.getPosition(), target.getPosition()) && (actor != target)) {
       // PROCRUSTEAN_IRON check
