@@ -11,7 +11,18 @@ public class AttackAction extends Action {
     public int getTargetPlayerIndex() {
         return targetPlayerIndex;
     }
-  
+
+    @JsonProperty("damage")
+    private int damage;
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
     @JsonCreator
     public AttackAction(@JsonProperty("executor")int executingPlayerIndex, @JsonProperty("target")int targetPlayerIndex) {
         super(executingPlayerIndex);
