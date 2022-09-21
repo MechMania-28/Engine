@@ -27,20 +27,24 @@ public class AttackActionTest {
     public void setup() {
         // Configure a default gameState
 
-        List<PlayerState> playerStateList = Arrays.asList(new PlayerState[4]);
-        playerStateList.set(0, new PlayerState(CharacterClass.KNIGHT, new Position(0, 0)));
-        playerStateList.set(1, new PlayerState(CharacterClass.ARCHER, new Position(1, 1)));
-        playerStateList.set(2, new PlayerState(CharacterClass.WIZARD, new Position(2, 0)));
-        playerStateList.set(3, new PlayerState());
+        List<CharacterClass> playerStateList = Arrays.asList(new CharacterClass[4]);
+        playerStateList.set(0, CharacterClass.KNIGHT);
+        playerStateList.set(1, CharacterClass.ARCHER);
+        playerStateList.set(2, CharacterClass.KNIGHT);
+        playerStateList.set(3, CharacterClass.KNIGHT);
 
         gameState = new GameState(playerStateList);
 
         testP1 = gameState.getPlayerStateByIndex(0);
         testP2 = gameState.getPlayerStateByIndex(1);
         testP3 = gameState.getPlayerStateByIndex(2);
-        testP1.setItem(Item.NULL_ITEM);
-        testP2.setItem(Item.NULL_ITEM);
-        testP3.setItem(Item.NULL_ITEM);
+        testP1.setItem(Item.NONE);
+        testP1.setPosition(new Position(0,0));
+        testP2.setItem(Item.NONE);
+        testP2.setPosition(new Position(0,0));
+        testP3.setItem(Item.NONE);
+        testP3.setPosition(new Position(0,0));
+
     }
 
     @Test
@@ -75,7 +79,7 @@ public class AttackActionTest {
         AttackAction attackTwo = new AttackAction(2, 0);
         gameState.executeAttack(attackOne);
         gameState.executeAttack(attackTwo);
-        assertEquals(testP1.getCurrHealth(), testP1.getEffectiveStatSet().getMaxHealth()-6); // Wizard damage + archer damage
+        assertEquals(testP1.getCurrHealth(), testP1.getEffectiveStatSet().getMaxHealth()-8); // Wizard damage (6) + archer damage(2)
     }
 
 
