@@ -51,6 +51,9 @@ public class Server {
 
   /**
    * Reads a single line from a server at the port number passed into the constructor.
+   * The code here is a bit confusing. The reason for checking null twice is that the socket closes
+   * the local END of a socket AFTER reading from it and getting NULL, which indicates an eof or the other end
+   * disconnects.
    *
    * @return Line read from server.
    */
@@ -58,15 +61,20 @@ public class Server {
     try {
       List<String> reads = new ArrayList<>();
       for (Socket socket : clientSockets) {
-        /* Handle possible closed sockets */
+        /* Handle possible closed sockets. Mock input from socket */
         if (socket.isClosed()) {
           reads.add("null");
           continue;
         }
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        reads.add(in.readLine());
+        System.out.println("In is null:" + (in == null));
+        String readLine = in.readLine();
+        reads.add(readLine == null ? "null" : readLine);
       }
       System.out.println("received " + reads);
+      System.out.print("reads[0] is null:");
+      System.out.println(reads.get(0) == null);
+      System.out.println(reads.get(0).length());
       return reads;
     } catch (IOException e) {
       e.printStackTrace();
@@ -95,7 +103,6 @@ public class Server {
   public void writeAll(String string) {
     try {
       for (Socket socket : clientSockets) {
-        /* Handle possible closed sockets */
         if (socket.isClosed()) {
           continue;
         }
