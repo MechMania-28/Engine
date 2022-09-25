@@ -100,6 +100,7 @@ public class PlayerState {
    *
    * @return Effective StatSet.
    */
+  @JsonProperty("stat_set")
   public StatSet getEffectiveStatSet() {
     // Item is either permanent or the buff is still in effect
     if (this.effectTimer != 0) {
@@ -121,5 +122,9 @@ public class PlayerState {
 
   public void incrementScore() {
     score++;
+  }
+
+  public int getCurrHealth() {
+    return health;
   }
 }

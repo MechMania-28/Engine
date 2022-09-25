@@ -5,6 +5,7 @@ public enum CharacterClass {
   WIZARD(6, 4, 3, 2),
   ARCHER(3, 2, 4, 3);
 
+  public static final CharacterClass DEFAULT = KNIGHT;
   private final StatSet statSet;
 
   CharacterClass(int maxHealth, int damage, int speed, int range) {

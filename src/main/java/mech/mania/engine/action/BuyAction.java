@@ -7,6 +7,10 @@ import mech.mania.engine.player.Item;
 
 public class BuyAction extends Action {
 
+  public static BuyAction DEFAULT(int playerIndex) {
+    return new BuyAction(playerIndex, Item.NONE);
+  }
+
   private final Item item;
 
   @JsonCreator

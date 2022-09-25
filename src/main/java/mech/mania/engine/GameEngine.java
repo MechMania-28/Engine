@@ -34,6 +34,7 @@ public class GameEngine {
         log = new GameLog();
     }
 
+
     public static void main(String[] args) throws IOException {
         List<Integer> ports = Arrays.stream(args).map(Integer::valueOf).collect(Collectors.toList());
         int enginePort = ports.get(0);
@@ -56,12 +57,21 @@ public class GameEngine {
                 case CLASS_REPORT:
                     List<String> reads = engine.gameServer.readAll();
                     List<CharacterClass> playerClasses = new ArrayList<>();
+
+                    int index = 0;
                     for (String read : reads) {
                         CharacterClass characterClass =
                                 new ObjectMapper().readValue(read, CharacterClass.class);
+                        if (characterClass == null) {
+                            System.out.println("Null input detected for player" + index + ". Removed from game.");
+                            engine.gameServer.terminateClient(index);
+                            characterClass = CharacterClass.DEFAULT;
+                        }
                         System.out.println(characterClass);
                         playerClasses.add(characterClass);
+                        index++;
                     }
+
                     engine.gameState = new GameState(playerClasses);
                     engine.start();
                     engine.commState = CommState.IN_GAME;
@@ -92,32 +102,56 @@ public class GameEngine {
      *
      * @param string Action to be executed as JSON.
      */
-    public void execute(String string) throws IOException {
+    public void execute(String string, int index) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         switch (phaseType) {
             case USE:
                 UseAction useAction = mapper.readValue(string, UseAction.class);
+                if (useAction == null) {
+                    System.out.println("Null input detected for player" + index + ". Removed from game.");
+                    gameServer.terminateClient(index);
+                } else {
+                    index = useAction.getExecutingPlayerIndex();
+                }
                 gameState.executeUse(useAction);
-                uses.set(useAction.getExecutingPlayerIndex(), useAction);
-                lastActions.set(useAction.getExecutingPlayerIndex(), useAction);
+                uses.set(index, useAction);
+                lastActions.set(index, useAction);
                 break;
             case MOVE:
                 MoveAction moveAction = mapper.readValue(string, MoveAction.class);
+                if (moveAction == null) {
+                    System.out.println("Null input detected for player" + index + ". Removed from game.");
+                    gameServer.terminateClient(index);
+                } else {
+                    index = moveAction.getExecutingPlayerIndex();
+                }
                 gameState.executeMove(moveAction);
-                moves.set(moveAction.getExecutingPlayerIndex(), moveAction);
-                lastActions.set(moveAction.getExecutingPlayerIndex(), moveAction);
+                moves.set(index, moveAction);
+                lastActions.set(index, moveAction);
                 break;
             case ATTACK:
                 AttackAction attackAction = mapper.readValue(string, AttackAction.class);
+                if (attackAction == null) {
+                    System.out.println("Null input detected for player" + index + ". Removed from game.");
+                    gameServer.terminateClient(index);
+                } else {
+                    index = attackAction.getExecutingPlayerIndex();
+                }
                 gameState.executeAttack(attackAction);
-                attacks.set(attackAction.getExecutingPlayerIndex(), attackAction);
-                lastActions.set(attackAction.getExecutingPlayerIndex(), attackAction);
+                attacks.set(index, attackAction);
+                lastActions.set(index, attackAction);
                 break;
             case BUY:
                 BuyAction buyAction = mapper.readValue(string, BuyAction.class);
+                if (buyAction == null) {
+                    System.out.println("Null input detected for player" + index + ". Removed from game.");
+                    gameServer.terminateClient(index);
+                } else {
+                    index = buyAction.getExecutingPlayerIndex();
+                }
                 gameState.executeBuy(buyAction);
-                buys.set(buyAction.getExecutingPlayerIndex(), buyAction);
-                lastActions.set(buyAction.getExecutingPlayerIndex(), buyAction);
+                buys.set(index, buyAction);
+                lastActions.set(index, buyAction);
                 break;
         }
     }
@@ -222,9 +256,11 @@ public class GameEngine {
         if (commState == CommState.END) return;
         List<String> reads = gameServer.readAll();
         System.out.print(printBoard());
+        int index = 0;
         for (String read : reads) {
             System.out.println(read);
-            execute(read);
+            execute(read, index);
+            index++;
         }
         endPhase();
     }

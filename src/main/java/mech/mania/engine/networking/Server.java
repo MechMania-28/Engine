@@ -3,10 +3,7 @@ package mech.mania.engine.networking;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -19,10 +16,21 @@ public class Server {
   private ServerSocket serverSocket;
   private boolean open;
 
+  private final int timeoutMilis = 5000;
+
   public Server(int portNumber, int clientCount) {
     this.portNumber = portNumber;
     this.open = false;
     this.clientSockets = Arrays.asList(new Socket[clientCount]);
+  }
+
+  public void terminateClient(int index) {
+    try {
+      if (!clientSockets.get(index).isClosed())
+        clientSockets.get(index).close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /** Starts a server at the port number passed into the constructor. */
@@ -30,7 +38,10 @@ public class Server {
     try {
       this.serverSocket = new ServerSocket(portNumber);
       for (int i = 0; i < clientSockets.size(); i++) {
-        clientSockets.set(i, serverSocket.accept());
+        Socket clientSocket = serverSocket.accept();
+        clientSocket.setSoTimeout(timeoutMilis);
+        clientSockets.set(i, clientSocket);
+
       }
       this.open = true;
     } catch (IOException e) {
@@ -47,9 +58,15 @@ public class Server {
     try {
       List<String> reads = new ArrayList<>();
       for (Socket socket : clientSockets) {
+        /* Handle possible closed sockets */
+        if (socket.isClosed()) {
+          reads.add("null");
+          continue;
+        }
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         reads.add(in.readLine());
       }
+      System.out.println("received " + reads);
       return reads;
     } catch (IOException e) {
       e.printStackTrace();
@@ -78,7 +95,12 @@ public class Server {
   public void writeAll(String string) {
     try {
       for (Socket socket : clientSockets) {
-        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        /* Handle possible closed sockets */
+        if (socket.isClosed()) {
+          continue;
+        }
+        OutputStream outputStream = socket.getOutputStream();
+        PrintWriter out = new PrintWriter(outputStream, true);
         out.println(string);
       }
     } catch (IOException e) {
@@ -92,6 +114,9 @@ public class Server {
    * @param string String to be written.
    */
   public void write(String string, int i) {
+    if (clientSockets.get(i).isClosed()) {
+      return;
+    }
     try {
       PrintWriter out = new PrintWriter(clientSockets.get(i).getOutputStream(), true);
       out.println(string);

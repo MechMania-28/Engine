@@ -22,7 +22,7 @@ public class GameEngineTest {
       engine.execute(
           String.format(
               "{\"@class\":\"mech.mania.engine.action.UseAction\",\"executor\":%d}",
-              i));
+              i), i);
     }
     Assertions.assertEquals(engine.getPhaseType(), GamePhaseType.MOVE);
   }

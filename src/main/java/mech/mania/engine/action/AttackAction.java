@@ -2,11 +2,15 @@ package mech.mania.engine.action;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import mech.mania.engine.player.Item;
 
 public class AttackAction extends Action {
     @JsonProperty("target")
     private int targetPlayerIndex;
 
+    public static AttackAction DEFAULT(int playerIndex) {
+        return new AttackAction(playerIndex, playerIndex);
+    }
 
     public int getTargetPlayerIndex() {
         return targetPlayerIndex;
