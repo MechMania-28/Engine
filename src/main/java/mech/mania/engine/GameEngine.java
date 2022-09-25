@@ -130,6 +130,7 @@ public class GameEngine {
                 lastActions.set(index, moveAction);
                 break;
             case ATTACK:
+                System.out.println(string.length());
                 AttackAction attackAction = mapper.readValue(string, AttackAction.class);
                 if (attackAction == null) {
                     System.out.println("Null input detected for player" + index + ". Removed from game.");
@@ -258,7 +259,7 @@ public class GameEngine {
         System.out.print(printBoard());
         int index = 0;
         for (String read : reads) {
-            System.out.println(read);
+            System.out.println(read +", of type " + read.getClass());
             execute(read, index);
             index++;
         }
