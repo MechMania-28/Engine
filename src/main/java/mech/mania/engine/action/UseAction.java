@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UseAction extends Action {
+
+  public static UseAction DEFAULT(int playerIndex) {
+    return new UseAction(playerIndex, false);
+  }
   @JsonCreator
   public UseAction(@JsonProperty("executor")int executingPlayerIndex, @JsonProperty("use") boolean use) {
     super(executingPlayerIndex);

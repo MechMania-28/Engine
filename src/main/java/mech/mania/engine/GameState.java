@@ -77,6 +77,9 @@ public class GameState {
    * @param useAction The action to be executed.
    */
   public void executeUse(UseAction useAction) {
+    if (useAction == null) {
+      return;
+    }
     PlayerState currentPlayer = getPlayerStateByIndex(useAction.getExecutingPlayerIndex());
     currentPlayer.getItem().affect(currentPlayer);
   }
@@ -88,6 +91,10 @@ public class GameState {
    */
 
   public void executeMove(MoveAction moveAction) {
+
+    if (moveAction == null) {
+      return;
+    }
 
     // The intended destination of our move action
     Position destination = moveAction.getDestination();
@@ -112,6 +119,10 @@ public class GameState {
    * @param attackAction The action to be executed.
    */
   public void executeAttack(AttackAction attackAction) {
+
+    if (attackAction == null) {
+      return;
+    }
 
     PlayerState actor = getPlayerStateByIndex(attackAction.getExecutingPlayerIndex());
     PlayerState target = getPlayerStateByIndex(attackAction.getTargetPlayerIndex());
@@ -140,6 +151,10 @@ public class GameState {
    * @param buyAction The action to be executed.
    */
   public void executeBuy(BuyAction buyAction) {
+    if (buyAction == null) {
+      return;
+    }
+
     int index = buyAction.getExecutingPlayerIndex();
     PlayerState currentPlayer = getPlayerStateByIndex(index);
     Item item = buyAction.getItem();
