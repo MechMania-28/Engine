@@ -141,8 +141,10 @@ public class GameState {
       else {
         target.incrementCurrHealth(-1 * damage);
       }
+    } else {
+      attackAction.invalidate();
     }
-    // If not in range, then nothing happens
+    // If not in range, then invalidate action
   }
 
   /**
@@ -172,6 +174,10 @@ public class GameState {
         playerState.incrementGold(Config.GOLD_PER_TURN);
 //        if (Utility.onControlTile(playerState)) playerState.incrementScore();
     }
+  }
+
+  public void removePlayer(int index) {
+    playerStateList.get(index).setActive(false);
   }
 
 }

@@ -5,6 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import mech.mania.engine.player.Item;
 
 public class AttackAction extends Action {
+
+    @JsonProperty("isValid")
+    private boolean isValid = true;
+
+    public void invalidate() {
+        isValid = false;
+    }
     @JsonProperty("target")
     private int targetPlayerIndex;
 

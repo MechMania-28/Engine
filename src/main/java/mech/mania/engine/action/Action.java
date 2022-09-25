@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 //@JsonDeserialize(as = UseAction.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Action {
+
+
+
   @JsonProperty("executor")
   private final int executingPlayerIndex;
 

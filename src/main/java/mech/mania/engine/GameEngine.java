@@ -7,6 +7,11 @@ import mech.mania.engine.networking.Server;
 import mech.mania.engine.player.CharacterClass;
 import mech.mania.engine.player.PlayerState;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +31,11 @@ public class GameEngine {
     private CommState commState;
     private int turnCount = 0;
     private List<Action> lastActions = Arrays.asList(new Action[4]);
+
+    public static final Logger LOGGER = LogManager.getLogger(GameEngine.class.getName());
+    static {
+        Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.DEBUG);
+    }
 
     public GameEngine(int gamePort) {
         this.phaseType = null;
@@ -63,11 +73,11 @@ public class GameEngine {
                         CharacterClass characterClass =
                                 new ObjectMapper().readValue(read, CharacterClass.class);
                         if (characterClass == null) {
-                            System.out.println("Null input detected for player" + index + ". Removed from game.");
+                            GameEngine.LOGGER.warn("Null input detected for player" + index + ".");
                             engine.gameServer.terminateClient(index);
                             characterClass = CharacterClass.DEFAULT;
                         }
-                        System.out.println(characterClass);
+                        GameEngine.LOGGER.debug(characterClass);
                         playerClasses.add(characterClass);
                         index++;
                     }
@@ -108,8 +118,10 @@ public class GameEngine {
             case USE:
                 UseAction useAction = mapper.readValue(string, UseAction.class);
                 if (useAction == null) {
-                    System.out.println("Null input detected for player" + index + ". Removed from game.");
+                    GameEngine.LOGGER.debug("Null input detected for player" + index + ". Removed from game.");
                     gameServer.terminateClient(index);
+                    gameState.removePlayer(index);
+                    useAction = UseAction.DEFAULT(index);
                 } else {
                     index = useAction.getExecutingPlayerIndex();
                 }
@@ -120,8 +132,9 @@ public class GameEngine {
             case MOVE:
                 MoveAction moveAction = mapper.readValue(string, MoveAction.class);
                 if (moveAction == null) {
-                    System.out.println("Null input detected for player" + index + ". Removed from game.");
+                    GameEngine.LOGGER.debug("Null input detected for player" + index + ". Removed from game.");
                     gameServer.terminateClient(index);
+                    moveAction = MoveAction.DEFAULT(index);
                 } else {
                     index = moveAction.getExecutingPlayerIndex();
                 }
@@ -130,23 +143,30 @@ public class GameEngine {
                 lastActions.set(index, moveAction);
                 break;
             case ATTACK:
-                System.out.println(string.length());
+                GameEngine.LOGGER.debug(string.length());
                 AttackAction attackAction = mapper.readValue(string, AttackAction.class);
                 if (attackAction == null) {
-                    System.out.println("Null input detected for player" + index + ". Removed from game.");
+                    GameEngine.LOGGER.debug("Null input detected for player" + index + ". Removed from game.");
                     gameServer.terminateClient(index);
+                    gameState.removePlayer(index);
+                    attackAction = AttackAction.DEFAULT(index);
                 } else {
                     index = attackAction.getExecutingPlayerIndex();
                 }
                 gameState.executeAttack(attackAction);
+                for (PlayerState playerState : gameState.getPlayerStateList()) {
+                    LOGGER.debug(playerState.getCurrHealth());
+                }
                 attacks.set(index, attackAction);
                 lastActions.set(index, attackAction);
                 break;
             case BUY:
                 BuyAction buyAction = mapper.readValue(string, BuyAction.class);
                 if (buyAction == null) {
-                    System.out.println("Null input detected for player" + index + ". Removed from game.");
+                    GameEngine.LOGGER.debug("Null input detected for player" + index + ". Removed from game.");
                     gameServer.terminateClient(index);
+                    gameState.removePlayer(index);
+                    buyAction = BuyAction.DEFAULT(index);
                 } else {
                     index = buyAction.getExecutingPlayerIndex();
                 }
@@ -259,7 +279,7 @@ public class GameEngine {
         System.out.print(printBoard());
         int index = 0;
         for (String read : reads) {
-            System.out.println(read +", of type " + read.getClass());
+            GameEngine.LOGGER.debug(read +", of type " + read.getClass());
             execute(read, index);
             index++;
         }

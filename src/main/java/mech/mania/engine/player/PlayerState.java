@@ -6,8 +6,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Represents the entire state of a Player. */
-@JsonIgnoreProperties({"effectiveStatSet"})
+@JsonIgnoreProperties({"currHealth"})
 public class PlayerState {
+  @JsonProperty("isActive")
+  private boolean isActive = true;
   @JsonProperty("class")
   private CharacterClass characterClass;
 
@@ -126,5 +128,9 @@ public class PlayerState {
 
   public int getCurrHealth() {
     return health;
+  }
+
+  public void setActive(boolean active) {
+    isActive = active;
   }
 }

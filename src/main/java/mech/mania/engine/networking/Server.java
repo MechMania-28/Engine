@@ -2,6 +2,7 @@ package mech.mania.engine.networking;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mech.mania.engine.GameEngine;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -51,8 +52,9 @@ public class Server {
 
   /**
    * Reads a single line from a server at the port number passed into the constructor.
-   * The code here is a bit confusing. The reason for checking null twice is that the socket closes
-   * the local END of a socket AFTER reading from it and getting NULL, which indicates an eof or the other end
+   * The reason for checking null twice is that the socket closes
+   * the local END of a socket AFTER reading from it and getting NULL, which is
+   * the only way of detecting an eof or the other end
    * disconnects.
    *
    * @return Line read from server.
@@ -67,14 +69,9 @@ public class Server {
           continue;
         }
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        System.out.println("In is null:" + (in == null));
         String readLine = in.readLine();
         reads.add(readLine == null ? "null" : readLine);
       }
-      System.out.println("received " + reads);
-      System.out.print("reads[0] is null:");
-      System.out.println(reads.get(0) == null);
-      System.out.println(reads.get(0).length());
       return reads;
     } catch (IOException e) {
       e.printStackTrace();
