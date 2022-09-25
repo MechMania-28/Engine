@@ -1,10 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Game" type="Multirun" separateTabs="false" reuseTabsWithFailures="true" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="0.0">
-    <runConfiguration name="GameEngine" type="Application" />
-    <runConfiguration name="DummyPlayerBot 1" type="Application" />
-    <runConfiguration name="DummyPlayerBot 2" type="Application" />
-    <runConfiguration name="DummyPlayerBot 3" type="Application" />
-    <runConfiguration name="DummyPlayerBot 4" type="Application" />
     <method v="2" />
   </configuration>
 </component>
