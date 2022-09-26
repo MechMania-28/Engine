@@ -1,9 +1,10 @@
 package mech.mania.engine.action;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import mech.mania.engine.player.Item;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AttackAction extends Action {
 
     @JsonProperty("isValid")

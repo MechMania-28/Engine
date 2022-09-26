@@ -1,7 +1,10 @@
 package mech.mania.engine.player;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.StringJoiner;
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 public enum Item {
   SHIELD(new StatSet(0, 0, 0, 0), 1, 8) {
     @Override

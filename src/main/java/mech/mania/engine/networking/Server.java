@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static mech.mania.engine.GameEngine.LOGGER;
+
 public class Server {
   private final int portNumber;
   private final List<Socket> clientSockets;
@@ -26,12 +28,17 @@ public class Server {
   }
 
   public void terminateClient(int index) {
+    LOGGER.debug("Terminating socket at index " + index);
+    if (clientSockets.get(index) == null) {
+      return;
+    }
     try {
       if (!clientSockets.get(index).isClosed())
         clientSockets.get(index).close();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+    clientSockets.set(index, null);
   }
 
   /** Starts a server at the port number passed into the constructor. */
@@ -64,12 +71,13 @@ public class Server {
       List<String> reads = new ArrayList<>();
       for (Socket socket : clientSockets) {
         /* Handle possible closed sockets. Mock input from socket */
-        if (socket.isClosed()) {
+        if (socket == null || socket.isClosed()) {
           reads.add("null");
           continue;
         }
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String readLine = in.readLine();
+        LOGGER.debug(readLine);
         reads.add(readLine == null ? "null" : readLine);
       }
       return reads;
@@ -100,7 +108,7 @@ public class Server {
   public void writeAll(String string) {
     try {
       for (Socket socket : clientSockets) {
-        if (socket.isClosed()) {
+        if (socket == null || socket.isClosed()) {
           continue;
         }
         OutputStream outputStream = socket.getOutputStream();
@@ -118,7 +126,7 @@ public class Server {
    * @param string String to be written.
    */
   public void write(String string, int i) {
-    if (clientSockets.get(i).isClosed()) {
+    if (clientSockets.get(i) == null || clientSockets.get(i).isClosed()) {
       return;
     }
     try {
