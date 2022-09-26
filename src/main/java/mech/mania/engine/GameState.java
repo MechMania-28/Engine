@@ -20,7 +20,7 @@ public class GameState {
   private final List<PlayerState> playerStateList = Arrays.asList(new PlayerState[4]);
 
   /** Holds the {@link Position} (spawn point) of each of the 4 players in player order CW. */
-  private final List<Position> spawnPoints = Arrays.asList(
+  public static final List<Position> spawnPoints = Arrays.asList(
           new Position(0, 0),
           new Position(BOARD_SIZE-1, 0),
           new Position(BOARD_SIZE-1, BOARD_SIZE-1),
@@ -34,7 +34,7 @@ public class GameState {
    */
   public GameState(List<CharacterClass> playerClasses) {
     for (int i = 0; i < 4; i++) {
-     playerStateList.set(i, new PlayerState(playerClasses.get(i), spawnPoints.get(i)));
+     playerStateList.set(i, new PlayerState(playerClasses.get(i), spawnPoints.get(i), i));
     }
   }
 
@@ -141,6 +141,10 @@ public class GameState {
       else {
         target.incrementCurrHealth(-1 * damage);
       }
+
+      if (target.isDead()) {
+        actor.incrementScore();
+      }
     } else {
       attackAction.invalidate();
     }
@@ -172,7 +176,14 @@ public class GameState {
   public void endTurn(){
     for (PlayerState playerState: playerStateList) {
         playerState.incrementGold(Config.GOLD_PER_TURN);
-//        if (Utility.onControlTile(playerState)) playerState.incrementScore();
+        if (Utility.onControlTile(playerState.getPosition())) playerState.incrementScore();
+    }
+  }
+
+  public void beginTurn() {
+    int index = 0;
+    for (PlayerState playerState : playerStateList) {
+      playerState.checkAndHandleDeath(index++);
     }
   }
 

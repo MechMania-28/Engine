@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import mech.mania.engine.GameState;
 
 /** Represents the entire state of a Player. */
-@JsonIgnoreProperties({"currHealth"})
+@JsonIgnoreProperties({"currHealth", "dead"})
 public class PlayerState {
+
+  private final int index;
   @JsonProperty("isActive")
   private boolean isActive = true;
   @JsonProperty("class")
@@ -33,10 +36,12 @@ public class PlayerState {
   @JsonCreator
   public PlayerState(
       @JsonProperty("class") CharacterClass characterClass,
-      @JsonProperty("position") Position position) {
+      @JsonProperty("position") Position position,
+      int index) {
     this.characterClass = characterClass;
     this.position = position;
     this.health = characterClass.getStatSet().getMaxHealth();
+    this.index = index;
   }
 
   public Item getItem() {
@@ -96,6 +101,13 @@ public class PlayerState {
 
   }
 
+  public void checkAndHandleDeath(int index) {
+    if (health == 0) {
+      position = GameState.spawnPoints.get(index);
+      health = getEffectiveStatSet().getMaxHealth();
+    }
+  }
+
   /**
    * Returns the effective {@link StatSet} of the player, defined as the base StatSet of their
    * {@link CharacterClass} and the buff/debuff StatSet of their active {@link Item}.
@@ -133,4 +145,9 @@ public class PlayerState {
   public void setActive(boolean active) {
     isActive = active;
   }
+
+  public boolean isDead() {
+    return health == 0;
+  }
+
 }
