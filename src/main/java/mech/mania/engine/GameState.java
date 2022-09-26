@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static mech.mania.engine.Config.BOARD_SIZE;
+import static mech.mania.engine.Config.PLAYER_NUMBER;
 
 public class GameState {
 
@@ -124,16 +125,23 @@ public class GameState {
       return;
     }
 
-    PlayerState actor = getPlayerStateByIndex(attackAction.getExecutingPlayerIndex());
-    PlayerState target = getPlayerStateByIndex(attackAction.getTargetPlayerIndex());
-    int range = actor.getEffectiveStatSet().getRange();
-    int damage = actor.getEffectiveStatSet().getDamage();
+    int executorIndex = attackAction.getExecutingPlayerIndex();
+    int targetIndex = attackAction.getTargetPlayerIndex();
+    if (executorIndex < 0 || executorIndex >= PLAYER_NUMBER || targetIndex < 0 || targetIndex >= PLAYER_NUMBER) {
+      attackAction.invalidate();
+      return;
+    }
+
+    PlayerState executor = getPlayerStateByIndex(executorIndex);
+    PlayerState target = getPlayerStateByIndex(targetIndex);
+    int range = executor.getEffectiveStatSet().getRange();
+    int damage = executor.getEffectiveStatSet().getDamage();
 
     /*add damage figures to attackaction.*/
     attackAction.setDamage(damage);
 
     // Check if in range and if target isn't itself
-    if (range >= Utility.squareDistance(actor.getPosition(), target.getPosition()) && (actor != target)) {
+    if (range >= Utility.squareDistance(executor.getPosition(), target.getPosition()) && (executor != target)) {
       // PROCRUSTEAN_IRON check
       if (target.getItem() == Item.PROCRUSTEAN_IRON) {
         target.incrementCurrHealth(-1 * CharacterClass.WIZARD.getStatSet().getDamage());

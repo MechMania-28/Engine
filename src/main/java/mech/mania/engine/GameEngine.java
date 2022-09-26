@@ -12,7 +12,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,6 +34,8 @@ public class GameEngine {
     private CommState commState;
     private int turnCount = 0;
     private List<Action> lastActions = Arrays.asList(new Action[4]);
+
+    private static final String output = ".\\log.json";
 
     public static final Logger LOGGER = LogManager.getLogger(GameEngine.class.getName());
     static {
@@ -70,6 +75,7 @@ public class GameEngine {
 
                     int index = 0;
                     for (String read : reads) {
+                        GameEngine.LOGGER.debug(read);
                         CharacterClass characterClass =
                                 new ObjectMapper().readValue(read, CharacterClass.class);
                         if (characterClass == null) {
@@ -104,7 +110,15 @@ public class GameEngine {
         }
         engine.gameServer.close();
 
-        System.out.println(engine.log.render());
+        File file = new File(output);
+        file.getParentFile().mkdirs();
+
+        PrintWriter printWriter = new PrintWriter(file);
+        try {
+            printWriter.println(engine.log.render());
+        } finally {
+            printWriter.close();
+        }
     }
 
     /**
@@ -143,7 +157,6 @@ public class GameEngine {
                 lastActions.set(index, moveAction);
                 break;
             case ATTACK:
-                GameEngine.LOGGER.debug(string.length());
                 AttackAction attackAction = mapper.readValue(string, AttackAction.class);
                 if (attackAction == null) {
                     GameEngine.LOGGER.debug("Null input detected for player" + index + ". Removed from game.");
@@ -154,7 +167,9 @@ public class GameEngine {
                     index = attackAction.getExecutingPlayerIndex();
                 }
                 gameState.executeAttack(attackAction);
+                LOGGER.debug("Printing current health of players");
                 for (PlayerState playerState : gameState.getPlayerStateList()) {
+
                     LOGGER.debug(playerState.getCurrHealth());
                 }
                 attacks.set(index, attackAction);
@@ -276,13 +291,14 @@ public class GameEngine {
         // phase.
         if (commState == CommState.END) return;
         List<String> reads = gameServer.readAll();
-        System.out.print(printBoard());
+//        System.out.print(printBoard());
         int index = 0;
         for (String read : reads) {
-            GameEngine.LOGGER.debug(read +", of type " + read.getClass());
+            GameEngine.LOGGER.debug(read +", of " + read.getClass());
             execute(read, index);
             index++;
         }
+        GameEngine.LOGGER.debug("End phase");
         endPhase();
     }
 }
