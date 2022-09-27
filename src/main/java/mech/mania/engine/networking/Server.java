@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,7 +68,6 @@ public class Server {
    * @return Line read from server.
    */
   public List<String> readAll() {
-    try {
       List<String> reads = new ArrayList<>();
       for (Socket socket : clientSockets) {
         /* Handle possible closed sockets. Mock input from socket */
@@ -75,16 +75,27 @@ public class Server {
           reads.add("null");
           continue;
         }
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        String readLine = in.readLine();
-        LOGGER.debug(readLine);
+
+        String readLine = null;
+
+        /* try read from socket. Handle timeout and null input. */
+        try {
+          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+          readLine = in.readLine();
+
+          LOGGER.debug(readLine);
+        } catch (SocketTimeoutException e) {
+          readLine = null;
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+
         reads.add(readLine == null ? "null" : readLine);
+
+
       }
       return reads;
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return null;
+
   }
 
   /**

@@ -134,7 +134,7 @@ public class GameEngine {
             case USE:
                 UseAction useAction = mapper.readValue(string, UseAction.class);
                 if (useAction == null) {
-                    GameEngine.LOGGER.debug("Null input detected for player" + index + ". Removed from game.");
+                    GameEngine.LOGGER.debug("Null input detected for player" + index + ".");
                     gameServer.terminateClient(index, turnCount);
                     gameState.removePlayer(index);
                     useAction = UseAction.DEFAULT(index);
@@ -148,7 +148,7 @@ public class GameEngine {
             case MOVE:
                 MoveAction moveAction = mapper.readValue(string, MoveAction.class);
                 if (moveAction == null) {
-                    GameEngine.LOGGER.debug("Null input detected for player" + index + ". Removed from game.");
+                    GameEngine.LOGGER.debug("Null input detected for player" + index + ".");
                     gameServer.terminateClient(index, turnCount);
                     moveAction = MoveAction.DEFAULT(index);
                 } else {
@@ -161,7 +161,7 @@ public class GameEngine {
             case ATTACK:
                 AttackAction attackAction = mapper.readValue(string, AttackAction.class);
                 if (attackAction == null) {
-                    GameEngine.LOGGER.debug("Null input detected for player" + index + ". Removed from game.");
+                    GameEngine.LOGGER.debug("Null input detected for player" + index + ".");
                     gameServer.terminateClient(index, turnCount);
                     gameState.removePlayer(index);
                     attackAction = AttackAction.DEFAULT(index);
