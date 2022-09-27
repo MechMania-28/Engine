@@ -51,6 +51,11 @@ public class GameEngine {
 
 
     public static void main(String[] args) throws IOException {
+        LOGGER.info(args[0].equals("debug"));
+
+        if (args.length > 0 && args[0].equals("debug")) {
+            Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.DEBUG);
+        }
 
         GameEngine engine = new GameEngine(Config.PORT);
         while (!engine.gameServer.isOpen()) engine.gameServer.open();
@@ -165,11 +170,6 @@ public class GameEngine {
                     index = attackAction.getExecutingPlayerIndex();
                 }
                 gameState.executeAttack(attackAction);
-                LOGGER.debug("Printing current health of players");
-                for (PlayerState playerState : gameState.getPlayerStateList()) {
-
-                    LOGGER.debug(playerState.getCurrHealth());
-                }
                 attacks.set(index, attackAction);
                 lastActions.set(index, attackAction);
                 break;
