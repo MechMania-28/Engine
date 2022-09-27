@@ -35,7 +35,7 @@ public class GameEngine {
     private int turnCount = 0;
     private List<Action> lastActions = Arrays.asList(new Action[4]);
 
-    private static final String output = ".\\gamelogs\\game_" + DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now()) + ".json";
+    private static final String output = "gamelogs\\game_" + DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now()) + ".json";
 
     public static final Logger LOGGER = LogManager.getLogger(GameEngine.class.getName());
     static {
@@ -77,7 +77,7 @@ public class GameEngine {
                         CharacterClass characterClass =
                                 new ObjectMapper().readValue(read, CharacterClass.class);
                         if (characterClass == null) {
-                            GameEngine.LOGGER.warn(String.format("Null input detected for player %d @ turn", index, engine.turnCount));
+                            GameEngine.LOGGER.debug(String.format("Null input detected for player at class reporting", index, engine.turnCount));
                             engine.gameServer.terminateClient(index, engine.turnCount);
                             characterClass = CharacterClass.DEFAULT;
                         }
