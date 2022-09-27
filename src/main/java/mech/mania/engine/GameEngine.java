@@ -39,7 +39,7 @@ public class GameEngine {
 
     public static final Logger LOGGER = LogManager.getLogger(GameEngine.class.getName());
     static {
-        Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.DEBUG);
+        Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.INFO);
     }
 
     public GameEngine(int gamePort) {
