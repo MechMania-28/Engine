@@ -2,6 +2,11 @@ package mech.mania.engine.networking;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mech.mania.engine.GameEngine;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -11,17 +16,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static mech.mania.engine.GameEngine.LOGGER;
 
 public class Server {
   private final int portNumber;
   private final List<Socket> clientSockets;
   private ServerSocket serverSocket;
   private boolean open;
-
   private final int timeoutMilis = 5000;
 
+  private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
+
   public Server(int portNumber, int clientCount) {
+
+
     this.portNumber = portNumber;
     this.open = false;
     this.clientSockets = Arrays.asList(new Socket[clientCount]);
@@ -117,6 +124,7 @@ public class Server {
    * @param string String to be written.
    */
   public void writeAll(String string) {
+    LOGGER.debug("Sending " + string + "to all clients.");
     try {
       for (Socket socket : clientSockets) {
         if (socket == null || socket.isClosed()) {

@@ -37,10 +37,8 @@ public class GameEngine {
 
     private static final String output = "gamelogs\\game_" + DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now()) + ".json";
 
-    public static final Logger LOGGER = LogManager.getLogger(GameEngine.class.getName());
-    static {
-        Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.INFO);
-    }
+    private static final Logger LOGGER = LogManager.getLogger(GameEngine.class.getName());
+
 
     public GameEngine(int gamePort) {
         this.phaseType = null;
@@ -54,6 +52,10 @@ public class GameEngine {
 
         if (args.length > 0 && args[0].equals("debug")) {
             Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.DEBUG);
+            Configurator.setLevel(LogManager.getLogger(Server.class).getName(), Level.DEBUG);
+        } else {
+            Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.INFO);
+            Configurator.setLevel(LogManager.getLogger(Server.class).getName(), Level.INFO);
         }
 
         GameEngine engine = new GameEngine(Config.PORT);
@@ -175,7 +177,7 @@ public class GameEngine {
             case BUY:
                 BuyAction buyAction = mapper.readValue(string, BuyAction.class);
                 if (buyAction == null) {
-                    GameEngine.LOGGER.debug("Null input detected for player" + index + ". Removed from game.");
+                    GameEngine.LOGGER.debug("Null input detected for player" + index + ".");
                     gameServer.terminateClient(index, turnCount);
                     gameState.removePlayer(index);
                     buyAction = BuyAction.DEFAULT(index);

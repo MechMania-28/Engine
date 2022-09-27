@@ -54,7 +54,7 @@ public class ServerClientTest {
   public void testWriteString() {
     Callable<String> server =
         () -> {
-          Server turnServer = new Server(27,1 );
+          Server turnServer = new Server(27,1);
           while (!turnServer.isOpen()) turnServer.open();
           turnServer.writeAll("Hello.");
           turnServer.close();
