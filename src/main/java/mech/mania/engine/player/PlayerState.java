@@ -108,7 +108,7 @@ public class PlayerState {
   }
 
   public void checkAndHandleBase(int index) {
-    if (position == GameState.spawnPoints.get(index)) {
+    if (position.equals(GameState.spawnPoints.get(index))) {
       health = getEffectiveStatSet().getMaxHealth();
     }
   }

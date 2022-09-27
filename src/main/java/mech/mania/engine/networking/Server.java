@@ -2,7 +2,6 @@ package mech.mania.engine.networking;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mech.mania.engine.GameEngine;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -27,14 +26,15 @@ public class Server {
     this.clientSockets = Arrays.asList(new Socket[clientCount]);
   }
 
-  public void terminateClient(int index) {
-    LOGGER.debug("Terminating socket at index " + index);
+  public void terminateClient(int index, int turnCount) {
     if (clientSockets.get(index) == null) {
       return;
     }
     try {
-      if (!clientSockets.get(index).isClosed())
+      if (!clientSockets.get(index).isClosed()) {
         clientSockets.get(index).close();
+        LOGGER.warn(String.format("Client crashed. terminating socket at index %d, @turn %d", index, turnCount));
+      }
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

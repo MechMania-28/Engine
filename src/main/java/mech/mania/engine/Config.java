@@ -7,6 +7,8 @@ public class Config {
   public static final int GOLD_PER_TURN = 1;
 
   public static final int PLAYER_NUMBER = 4;
+
+  public static final int PORT = 29170;
   /*
   etc.
    */
