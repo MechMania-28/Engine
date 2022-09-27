@@ -7,7 +7,6 @@ import mech.mania.engine.player.Position;
 public class Utility {
 
   public static boolean onControlTile(Position position) {
-    System.out.println((Config.BOARD_SIZE - 1) / 2);
     int controlTileBegin = (Config.BOARD_SIZE - 1) / 2;
     int controlTileEnd = controlTileBegin + 1;
     return (controlTileBegin <= position.getX() && position.getX() <= controlTileEnd)
