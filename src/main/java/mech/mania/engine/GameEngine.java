@@ -51,7 +51,6 @@ public class GameEngine {
 
 
     public static void main(String[] args) throws IOException {
-        LOGGER.info(args[0].equals("debug"));
 
         if (args.length > 0 && args[0].equals("debug")) {
             Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.DEBUG);
