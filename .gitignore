@@ -42,4 +42,5 @@ gradle-app.setting
 ## IDEA IDE Config
 .idea
 
-# *.json
+
+*.json

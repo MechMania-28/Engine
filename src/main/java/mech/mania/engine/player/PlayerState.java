@@ -104,6 +104,11 @@ public class PlayerState {
   public void checkAndHandleDeath(int index) {
     if (health == 0) {
       position = GameState.spawnPoints.get(index);
+    }
+  }
+
+  public void checkAndHandleBase(int index) {
+    if (position == GameState.spawnPoints.get(index)) {
       health = getEffectiveStatSet().getMaxHealth();
     }
   }

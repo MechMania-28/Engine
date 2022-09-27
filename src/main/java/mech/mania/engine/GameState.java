@@ -151,7 +151,7 @@ public class GameState {
       }
 
       if (target.isDead()) {
-        actor.incrementScore();
+        executor.incrementScore();
       }
     } else {
       attackAction.invalidate();
@@ -178,6 +178,9 @@ public class GameState {
       // Set the item and decrement the players gold
       currentPlayer.setItem(item);
       currentPlayer.decrementGold(item.getCost());
+    } else {
+      if (item != Item.NONE)
+        buyAction.invalidate();
     }
   }
 
@@ -191,7 +194,9 @@ public class GameState {
   public void beginTurn() {
     int index = 0;
     for (PlayerState playerState : playerStateList) {
-      playerState.checkAndHandleDeath(index++);
+      playerState.checkAndHandleDeath(index);
+      playerState.checkAndHandleBase(index);
+      index++;
     }
   }
 

@@ -9,6 +9,13 @@ import mech.mania.engine.player.Item;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BuyAction extends Action {
 
+  @JsonProperty("isValid")
+  private boolean isValid = true;
+
+  public void invalidate() {
+    isValid = false;
+  }
+
   public static BuyAction DEFAULT(int playerIndex) {
     return new BuyAction(playerIndex, Item.NONE);
   }
