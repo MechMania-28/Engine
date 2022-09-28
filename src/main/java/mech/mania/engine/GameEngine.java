@@ -40,9 +40,9 @@ public class GameEngine {
     private static final Logger LOGGER = LogManager.getLogger(GameEngine.class.getName());
 
 
-    public GameEngine(int gamePort) {
+    public GameEngine() {
         this.phaseType = null;
-        gameServer = new Server(gamePort, 4);
+        gameServer = new Server();
         this.commState = CommState.START;
         log = new GameLog();
     }
@@ -58,7 +58,7 @@ public class GameEngine {
             Configurator.setLevel(LogManager.getLogger(Server.class).getName(), Level.INFO);
         }
 
-        GameEngine engine = new GameEngine(Config.PORT);
+        GameEngine engine = new GameEngine();
         while (!engine.gameServer.isOpen()) engine.gameServer.open();
 
         while (engine.commState != CommState.END) {

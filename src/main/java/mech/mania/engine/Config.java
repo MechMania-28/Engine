@@ -6,9 +6,9 @@ public class Config {
   public static final int TURNS = 50;
   public static final int GOLD_PER_TURN = 1;
 
-  public static final int PLAYER_NUMBER = 4;
+  public static final int MAX_PLAYERS = 4;
 
-  public static final int PORT = 29170;
+  public static final int[] PORTS = {29170, 29171, 29172, 29173};
   /*
   etc.
    */

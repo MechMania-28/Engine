@@ -2,11 +2,9 @@ package mech.mania.engine.networking;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mech.mania.engine.GameEngine;
-import org.apache.logging.log4j.Level;
+import mech.mania.engine.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -18,20 +16,48 @@ import java.util.List;
 
 
 public class Server {
-  private final int portNumber;
   private final List<Socket> clientSockets;
-  private ServerSocket serverSocket;
+  private final List<ServerSocket> serverSockets;
   private boolean open;
-  private final int timeoutMilis = 5000;
+  private final int TIMEOUT_MILIS = 5000;
 
   private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
 
-  public Server(int portNumber, int clientCount) {
+  public Server() {
 
 
-    this.portNumber = portNumber;
     this.open = false;
-    this.clientSockets = Arrays.asList(new Socket[clientCount]);
+    this.clientSockets = Arrays.asList(new Socket[Config.MAX_PLAYERS]);
+    this.serverSockets = Arrays.asList(new ServerSocket[Config.MAX_PLAYERS]);
+
+  }
+
+
+
+  /** Starts a server at the port number passed into the constructor. */
+  public void open() {
+    try {
+      for (int i = 0; i < clientSockets.size(); i++) {
+        ServerSocket serverSocket = new ServerSocket(Config.PORTS[i]);
+        serverSocket.setSoTimeout(TIMEOUT_MILIS);
+
+        Socket clientSocket;
+        try {
+          clientSocket = serverSocket.accept();
+        } catch (SocketTimeoutException e) {
+          LOGGER.debug("Accept timeout for client socket" + i);
+          continue;
+        }
+        if (clientSocket != null) {
+          clientSocket.setSoTimeout(TIMEOUT_MILIS);
+          clientSockets.set(i, clientSocket);
+        }
+
+      }
+      this.open = true;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   public void terminateClient(int index, int turnCount) {
@@ -47,22 +73,6 @@ public class Server {
       throw new RuntimeException(e);
     }
     clientSockets.set(index, null);
-  }
-
-  /** Starts a server at the port number passed into the constructor. */
-  public void open() {
-    try {
-      this.serverSocket = new ServerSocket(portNumber);
-      for (int i = 0; i < clientSockets.size(); i++) {
-        Socket clientSocket = serverSocket.accept();
-        clientSocket.setSoTimeout(timeoutMilis);
-        clientSockets.set(i, clientSocket);
-
-      }
-      this.open = true;
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   /**
@@ -161,11 +171,16 @@ public class Server {
   }
 
   public void close() {
-    try {
-      serverSocket.close();
-      this.open = false;
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+      for (ServerSocket serverSocket : serverSockets) {
+      try {
+        serverSocket.close();
+        LOGGER.debug("Closing socket");
+        } catch (IOException e) {
+          LOGGER.debug(e);
+        } catch (NullPointerException e) {
+          LOGGER.debug("Closing null socket");
+        }
+      }
+    this.open = false;
   }
 }
