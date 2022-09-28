@@ -21,12 +21,7 @@ public class GameState {
   private final List<PlayerState> playerStateList = Arrays.asList(new PlayerState[4]);
 
   /** Holds the {@link Position} (spawn point) of each of the 4 players in player order CW. */
-  public static final List<Position> spawnPoints = Arrays.asList(
-          new Position(0, 0),
-          new Position(BOARD_SIZE-1, 0),
-          new Position(BOARD_SIZE-1, BOARD_SIZE-1),
-          new Position(0, BOARD_SIZE-1)
-  );
+
 
   /**
    * Constructor that takes a list of character classes for each of the players respectively.
@@ -35,7 +30,7 @@ public class GameState {
    */
   public GameState(List<CharacterClass> playerClasses) {
     for (int i = 0; i < 4; i++) {
-     playerStateList.set(i, new PlayerState(playerClasses.get(i), spawnPoints.get(i), i));
+     playerStateList.set(i, new PlayerState(playerClasses.get(i), Utility.spawnPoints.get(i), i));
     }
   }
 
@@ -174,7 +169,7 @@ public class GameState {
     Item item = buyAction.getItem();
 
     // If the current player has enough gold and is in their own spawnpoint.
-    if ((currentPlayer.getGold() >= item.getCost()) && currentPlayer.getPosition().equals(spawnPoints.get(index))) {
+    if ((currentPlayer.getGold() >= item.getCost()) && currentPlayer.getPosition().equals(Utility.spawnPoints.get(index))) {
       // Set the item and decrement the players gold
       currentPlayer.setItem(item);
       currentPlayer.decrementGold(item.getCost());

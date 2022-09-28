@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import mech.mania.engine.GameState;
+import mech.mania.engine.util.Utility;
 
 /** Represents the entire state of a Player. */
 @JsonIgnoreProperties({"currHealth", "dead"})
@@ -103,12 +104,12 @@ public class PlayerState {
 
   public void checkAndHandleDeath(int index) {
     if (health == 0) {
-      position = GameState.spawnPoints.get(index);
+      position = Utility.spawnPoints.get(index);
     }
   }
 
   public void checkAndHandleBase(int index) {
-    if (position.equals(GameState.spawnPoints.get(index))) {
+    if (position.equals(Utility.spawnPoints.get(index))) {
       health = getEffectiveStatSet().getMaxHealth();
     }
   }
