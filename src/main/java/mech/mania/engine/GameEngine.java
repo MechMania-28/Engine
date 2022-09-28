@@ -1,6 +1,7 @@
 package mech.mania.engine;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.tongfei.progressbar.ProgressBar;
 import mech.mania.engine.action.*;
 import mech.mania.engine.networking.CommState;
 import mech.mania.engine.networking.Server;
@@ -48,6 +49,8 @@ public class GameEngine {
 
     public static void main(String[] args) throws IOException {
 
+        LOGGER.info("Welcome to Mechmania 28 Engine!");
+
         if (System.getProperty("debug") != null && System.getProperty("debug").equals("true")) {
             Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.DEBUG);
             Configurator.setLevel(LogManager.getLogger(Server.class).getName(), Level.DEBUG);
@@ -60,11 +63,12 @@ public class GameEngine {
                 "gamelogs\\game_" + DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now()) + ".json" :
                 System.getProperty("output");
 
-        LOGGER.debug("Output is set to " + output);
+        LOGGER.info("Output is set to " + output);
 
         GameEngine engine = new GameEngine();
         while (!engine.gameServer.isOpen()) engine.gameServer.open();
 
+        ProgressBar progressBar = null;
         while (engine.commState != CommState.END) {
             switch (engine.commState) {
                 case START:
@@ -87,7 +91,7 @@ public class GameEngine {
                         CharacterClass characterClass =
                                 new ObjectMapper().readValue(read, CharacterClass.class);
                         if (characterClass == null) {
-                            GameEngine.LOGGER.debug(String.format("Null input detected for player at class reporting", index, engine.turnCount));
+                            GameEngine.LOGGER.info(String.format("Null input detected for player %d at class reporting", index));
                             engine.gameServer.terminateClient(index, engine.turnCount);
                             characterClass = CharacterClass.DEFAULT;
                         }
@@ -99,12 +103,19 @@ public class GameEngine {
                     engine.gameState = new GameState(playerClasses);
                     engine.start();
                     engine.commState = CommState.IN_GAME;
+                    progressBar = new ProgressBar("Game Progress", 4 * Config.TURNS);
                     break;
                 case IN_GAME:
+                    progressBar.step();
                     engine.play();
                     break;
             }
         }
+
+        progressBar.close();
+        LOGGER.info("Game ended.");
+
+        LOGGER.info("Writing output...");
 
         engine.gameServer.writeAll("fin");
         List<Boolean> ended = Arrays.asList(false, false, false, false);
@@ -131,6 +142,8 @@ public class GameEngine {
         } finally {
             printWriter.close();
         }
+
+        LOGGER.info("Completed! Check your output at Engine\\gamelogs.");
     }
 
     /**
