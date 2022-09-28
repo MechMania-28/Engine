@@ -35,8 +35,6 @@ public class GameEngine {
     private int turnCount = 0;
     private List<Action> lastActions = Arrays.asList(new Action[4]);
 
-    private static final String output = "gamelogs\\game_" + DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now()) + ".json";
-
     private static final Logger LOGGER = LogManager.getLogger(GameEngine.class.getName());
 
 
@@ -50,13 +48,19 @@ public class GameEngine {
 
     public static void main(String[] args) throws IOException {
 
-        if (args.length > 0 && args[0].equals("debug")) {
+        if (System.getProperty("debug") != null && System.getProperty("debug").equals("true")) {
             Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.DEBUG);
             Configurator.setLevel(LogManager.getLogger(Server.class).getName(), Level.DEBUG);
         } else {
             Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.INFO);
             Configurator.setLevel(LogManager.getLogger(Server.class).getName(), Level.INFO);
         }
+
+        String output = System.getProperty("output") == null ?
+                "gamelogs\\game_" + DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now()) + ".json" :
+                System.getProperty("output");
+
+        LOGGER.debug("Output is set to " + output);
 
         GameEngine engine = new GameEngine();
         while (!engine.gameServer.isOpen()) engine.gameServer.open();
@@ -115,7 +119,11 @@ public class GameEngine {
         engine.gameServer.close();
 
         File file = new File(output);
-        file.getParentFile().mkdirs();
+        try {
+            file.getParentFile().mkdirs();
+        } catch (NullPointerException e) {
+            LOGGER.debug("Cannot create parent directory for given output");
+        }
 
         PrintWriter printWriter = new PrintWriter(file);
         try {
@@ -309,4 +317,5 @@ public class GameEngine {
         GameEngine.LOGGER.debug("End phase");
         endPhase();
     }
+
 }
