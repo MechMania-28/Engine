@@ -1,5 +1,6 @@
 package mech.mania.engine.networking;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -25,12 +26,13 @@ public class ServerClientTest {
     executor.shutdown();
   }
 
+  @Disabled("Old version")
   @Test
   @Timeout(value = 500, unit = TimeUnit.MILLISECONDS)
   public void testLifeCycle() {
     Callable<String> server =
         () -> {
-          Server turnServer = new Server(27, 1);
+          Server turnServer = new Server();
           while (!turnServer.isOpen()) turnServer.open();
           turnServer.close();
           assertFalse(turnServer.isOpen());
@@ -49,12 +51,13 @@ public class ServerClientTest {
     runAllCallables(Arrays.asList(server, client));
   }
 
+  @Disabled("Old version")
   @Test
   @Timeout(value = 500, unit = TimeUnit.MILLISECONDS)
   public void testWriteString() {
     Callable<String> server =
         () -> {
-          Server turnServer = new Server(27,1);
+          Server turnServer = new Server();
           while (!turnServer.isOpen()) turnServer.open();
           turnServer.writeAll("Hello.");
           turnServer.close();

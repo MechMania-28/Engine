@@ -10,10 +10,10 @@ public class GameEngineTest {
 
   private GameEngine engine;
 
-  @BeforeEach
-  public void setup() {
-    this.engine = new GameEngine(0);
-  }
+//  @BeforeEach
+//  public void setup() {
+//    this.engine = new GameEngine(0);
+//  }
 
   @Test
   public void testPhaseChange() throws IOException {

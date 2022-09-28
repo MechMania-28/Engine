@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static mech.mania.engine.Config.BOARD_SIZE;
-import static mech.mania.engine.Config.PLAYER_NUMBER;
+import static mech.mania.engine.Config.MAX_PLAYERS;
 
 public class GameState {
 
@@ -127,7 +127,7 @@ public class GameState {
 
     int executorIndex = attackAction.getExecutingPlayerIndex();
     int targetIndex = attackAction.getTargetPlayerIndex();
-    if (executorIndex < 0 || executorIndex >= PLAYER_NUMBER || targetIndex < 0 || targetIndex >= PLAYER_NUMBER) {
+    if (executorIndex < 0 || executorIndex >= MAX_PLAYERS || targetIndex < 0 || targetIndex >= MAX_PLAYERS) {
       attackAction.invalidate();
       return;
     }
@@ -203,5 +203,6 @@ public class GameState {
   public void removePlayer(int index) {
     playerStateList.get(index).setActive(false);
   }
+
 
 }
