@@ -1,0 +1,18 @@
+# build engine - don't modify?
+version: 0.2 # aws buildspec version
+phases:
+  install:
+    runtime-versions:
+      java: corretto11 # aws version of java
+  build:
+    commands:
+      - ./gradlew build
+  post_build:
+    commands:
+      - ./gradlew test # run tests?
+      - cd build/libs
+      - mv *.jar mm28-engine.jar
+artifacts:
+  base-directory: 'build/libs'
+  files:
+    - mm28-engine.jar
