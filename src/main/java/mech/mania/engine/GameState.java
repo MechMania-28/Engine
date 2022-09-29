@@ -155,7 +155,7 @@ public class GameState {
     return range >= Utility.squareDistance(executor.getPosition(), target.getPosition()) && (executor != target);
   }
 
-  public void queueAttack(AttackAction attackAction) throws JsonProcessingException {
+  public void queueAttack(AttackAction attackAction) {
 
     attackActionQueue.add(attackAction);
     if (attackActionQueue.size() == MAX_PLAYERS) {
@@ -164,7 +164,7 @@ public class GameState {
     }
   }
 
-  public void executeAttackQueue() throws JsonProcessingException {
+  public void executeAttackQueue() {
     boolean checkedShield = false;
     for (AttackAction attackAction : attackActionQueue) {
       if (!checkedShield &&

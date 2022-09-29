@@ -153,11 +153,20 @@ public class GameEngine {
      *
      * @param string Action to be executed as JSON.
      */
-    public void execute(String string, int index) throws IOException {
+    public void execute(String string, int index) {
         ObjectMapper mapper = new ObjectMapper();
         switch (phaseType) {
             case USE:
-                UseAction useAction = mapper.readValue(string, UseAction.class);
+                UseAction useAction = null;
+                try {
+                    useAction = mapper.readValue(string, UseAction.class);
+                } catch (IOException e) {
+                    GameEngine.LOGGER.debug("Malformed input detected for player" + index + ".");
+                    gameServer.terminateClient(index, turnCount);
+                    gameState.removePlayer(index);
+                    useAction = UseAction.DEFAULT(index);
+                }
+
                 if (useAction == null) {
                     GameEngine.LOGGER.debug("Null input detected for player" + index + ".");
                     gameServer.terminateClient(index, turnCount);
@@ -173,7 +182,15 @@ public class GameEngine {
                 lastActions.set(index, useAction);
                 break;
             case MOVE:
-                MoveAction moveAction = mapper.readValue(string, MoveAction.class);
+                MoveAction moveAction = null;
+                try {
+                    moveAction = mapper.readValue(string, MoveAction.class);
+                } catch (IOException e) {
+                    GameEngine.LOGGER.debug("Malformed input detected for player" + index + ".");
+                    gameServer.terminateClient(index, turnCount);
+                    gameState.removePlayer(index);
+                    moveAction = MoveAction.DEFAULT(index);
+                }
                 if (moveAction == null) {
                     GameEngine.LOGGER.debug("Null input detected for player" + index + ".");
                     gameServer.terminateClient(index, turnCount);
@@ -186,7 +203,15 @@ public class GameEngine {
                 lastActions.set(index, moveAction);
                 break;
             case ATTACK:
-                AttackAction attackAction = mapper.readValue(string, AttackAction.class);
+                AttackAction attackAction = null;
+                try {
+                    attackAction = mapper.readValue(string, AttackAction.class);
+                } catch (IOException e) {
+                    GameEngine.LOGGER.debug("Malformed input detected for player" + index + ".");
+                    gameServer.terminateClient(index, turnCount);
+                    gameState.removePlayer(index);
+                    attackAction = AttackAction.DEFAULT(index);
+                }
                 if (attackAction == null) {
                     GameEngine.LOGGER.debug("Null input detected for player" + index + ".");
                     gameServer.terminateClient(index, turnCount);
@@ -200,7 +225,15 @@ public class GameEngine {
                 lastActions.set(index, attackAction);
                 break;
             case BUY:
-                BuyAction buyAction = mapper.readValue(string, BuyAction.class);
+                BuyAction buyAction = null;
+                try {
+                    buyAction = mapper.readValue(string, BuyAction.class);
+                } catch (IOException e) {
+                    GameEngine.LOGGER.debug("Malformed input detected for player" + index + ".");
+                    gameServer.terminateClient(index, turnCount);
+                    gameState.removePlayer(index);
+                    buyAction = BuyAction.DEFAULT(index);
+                }
                 if (buyAction == null) {
                     GameEngine.LOGGER.debug("Null input detected for player" + index + ".");
                     gameServer.terminateClient(index, turnCount);
