@@ -7,12 +7,6 @@ import mech.mania.engine.player.Item;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AttackAction extends Action {
 
-    @JsonProperty("isValid")
-    private boolean isValid = true;
-
-    public void invalidate() {
-        isValid = false;
-    }
     @JsonProperty("target")
     private int targetPlayerIndex;
 
@@ -33,6 +27,13 @@ public class AttackAction extends Action {
 
     public void setDamage(int damage) {
         this.damage = damage;
+    }
+
+    @JsonProperty("nullified")
+    private boolean nullified = false;
+
+    public void nullify() {
+        nullified = true;
     }
 
     @JsonCreator

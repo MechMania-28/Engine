@@ -49,7 +49,6 @@ public class GameEngine {
 
     public static void main(String[] args) throws IOException {
 
-        LOGGER.info("Welcome to Mechmania 28 Engine!");
 
         if (System.getProperty("debug") != null && System.getProperty("debug").equals("true")) {
             Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.DEBUG);
@@ -58,6 +57,9 @@ public class GameEngine {
             Configurator.setLevel(LogManager.getLogger(GameEngine.class).getName(), Level.INFO);
             Configurator.setLevel(LogManager.getLogger(Server.class).getName(), Level.INFO);
         }
+
+        LOGGER.info("Welcome to Mechmania 28 Engine!");
+
 
         String output = System.getProperty("output") == null ?
                 "gamelogs\\game_" + DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now()) + ".json" :
@@ -164,6 +166,8 @@ public class GameEngine {
                 } else {
                     index = useAction.getExecutingPlayerIndex();
                 }
+                gameState.beginTurn();
+
                 gameState.executeUse(useAction);
                 uses.set(index, useAction);
                 lastActions.set(index, useAction);
@@ -191,7 +195,7 @@ public class GameEngine {
                 } else {
                     index = attackAction.getExecutingPlayerIndex();
                 }
-                gameState.executeAttack(attackAction);
+                gameState.queueAttack(attackAction);
                 attacks.set(index, attackAction);
                 lastActions.set(index, attackAction);
                 break;
@@ -224,10 +228,6 @@ public class GameEngine {
         gameServer.writeAll(phase);
     }
 
-    private void beginTurn() {
-        gameState.beginTurn();
-    }
-
     private void endTurn() {
         gameState.endTurn();
         GameTurn turn = renderTurn();
@@ -240,9 +240,6 @@ public class GameEngine {
     }
 
     private void endPhase() {
-        if (phaseType == GamePhaseType.USE) {
-            beginTurn();
-        }
         if (phaseType == GamePhaseType.BUY) {
             endTurn();
         }

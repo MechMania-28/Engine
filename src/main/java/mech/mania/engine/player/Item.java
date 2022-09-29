@@ -9,7 +9,7 @@ public enum Item {
   SHIELD(new StatSet(0, 0, 0, 0), 1, 8) {
     @Override
     public void affect(PlayerState player) {
-      player.setEffectTimer(this.getEffectTimer());
+      player.setShielded(true);
     }
   },
   PROCRUSTEAN_IRON(new StatSet(0, 0, 0, 0), -1, 8) {
@@ -21,21 +21,18 @@ public enum Item {
     @Override
     public void affect(PlayerState player) {
       player.setCharacterClass(CharacterClass.KNIGHT);
-      player.setEffectTimer(this.getEffectTimer());
     }
   },
   MAGIC_STAFF(new StatSet(0, 0, 0, 0), 0, 8) {
     @Override
     public void affect(PlayerState player) {
       player.setCharacterClass(CharacterClass.WIZARD);
-      player.setEffectTimer(this.getEffectTimer());
     }
   },
   STEEL_TIPPED_ARROW(new StatSet(0, 0, 0, 0), 0, 8) {
     @Override
     public void affect(PlayerState player) {
       player.setCharacterClass(CharacterClass.ARCHER);
-      player.setEffectTimer(this.getEffectTimer());
     }
   },
   ANEMOI_WINGS(new StatSet(0, 0, 2, 0), -1, 10) {
@@ -47,7 +44,7 @@ public enum Item {
   STRENGTH_POTION(new StatSet(0, 4, 0, 0), 1, 5 ) {
     @Override
     public void affect(PlayerState player) {
-      player.setEffectTimer(this.getEffectTimer());
+
     }
   },
   SPEED_POTION(new StatSet(0, 0, 2, 0), 1, 5 ) {
@@ -59,7 +56,7 @@ public enum Item {
   DEXTERITY_POTION(new StatSet(0, 0, 0, 2), 1, 5 ) {
     @Override
     public void affect(PlayerState player) {
-      player.setEffectTimer(this.getEffectTimer());
+
     }
   },
 
@@ -71,6 +68,8 @@ public enum Item {
       // Do nothing
     }
   };
+
+
 
 
   /** The effect the item has on a player */

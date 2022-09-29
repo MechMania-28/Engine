@@ -35,8 +35,8 @@ public class BuyActionTest {
 
         testP1 = gameState.getPlayerStateByIndex(0);
         testP2 = gameState.getPlayerStateByIndex(1);
-        testP1.setItem(Item.NONE);
-        testP2.setItem(Item.NONE);
+        testP1.setItemHolding(Item.NONE);
+        testP2.setItemHolding(Item.NONE);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class BuyActionTest {
         gameState.executeBuy(buyAnemoiWings);
 
         // Test that the player has successfully acquired the item
-        assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
+        assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
         // Test that the gold has decreased by the correct amount
         assertEquals(testP1.getGold(), 100 - Item.ANEMOI_WINGS.getCost());
 
@@ -65,8 +65,8 @@ public class BuyActionTest {
         BuyAction buyStrengthPotion  = new BuyAction(0, Item.STRENGTH_POTION);
         gameState.executeBuy(buyStrengthPotion);
 
-        assertEquals(testP1.getItem(), Item.STRENGTH_POTION);
-        assertNotEquals(testP1.getItem(), Item.ANEMOI_WINGS);
+        assertEquals(testP1.getItemHolding(), Item.STRENGTH_POTION);
+        assertNotEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
 
         assertEquals(testP1.getGold(), 100 - Item.ANEMOI_WINGS.getCost() - Item.STRENGTH_POTION.getCost());
     }
@@ -83,8 +83,8 @@ public class BuyActionTest {
         gameState.executeBuy(player1Buy);
         gameState.executeBuy(player2Buy);
 
-        assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
-        assertEquals(testP2.getItem(), Item.ANEMOI_WINGS);
+        assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
+        assertEquals(testP2.getItemHolding(), Item.ANEMOI_WINGS);
 
     }
 
@@ -95,7 +95,7 @@ public class BuyActionTest {
 
         BuyAction buyAction = new BuyAction(0, Item.ANEMOI_WINGS);
 
-        assertNotEquals(testP1.getItem(), Item.ANEMOI_WINGS);
+        assertNotEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
         assertEquals(testP1.getGold(), Item.ANEMOI_WINGS.getCost()-1);
     }
 
@@ -107,7 +107,7 @@ public class BuyActionTest {
 
         BuyAction buyAction = new BuyAction(0, Item.ANEMOI_WINGS);
 
-        assertNotEquals(testP1.getItem(), Item.ANEMOI_WINGS);
+        assertNotEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
         assertEquals(testP1.getGold(), 100);
     }
 }

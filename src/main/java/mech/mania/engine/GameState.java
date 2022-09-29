@@ -1,18 +1,20 @@
 package mech.mania.engine;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import mech.mania.engine.action.AttackAction;
 import mech.mania.engine.action.BuyAction;
 import mech.mania.engine.action.MoveAction;
 import mech.mania.engine.action.UseAction;
+import mech.mania.engine.networking.Server;
 import mech.mania.engine.player.*;
 
 import mech.mania.engine.util.Utility;
 
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static mech.mania.engine.Config.BOARD_SIZE;
 import static mech.mania.engine.Config.MAX_PLAYERS;
 
 public class GameState {
@@ -45,7 +47,7 @@ public class GameState {
       // Effect timer gets set in use action
 
       // Negative effect timer means the item is permanent
-      if (player.getItem().isPermanent()) {
+      if (player.getItemInEffect().isPermanent()) {
         player.setEffectTimer(-1);
       }
 
@@ -54,11 +56,13 @@ public class GameState {
         player.decrementEffectTimer();
       }
 
-      // If the players item has ran out
+      // If the players item has run out
       if (player.getEffectTimer() == 0) {
-        player.setItem(Item.NONE);
+        player.setItemInEffect(Item.NONE);
         player.setEffectTimer(-1);
       }
+
+      player.setShielded(false);
     }
   }
 
@@ -76,8 +80,32 @@ public class GameState {
     if (useAction == null) {
       return;
     }
+
     PlayerState currentPlayer = getPlayerStateByIndex(useAction.getExecutingPlayerIndex());
-    currentPlayer.getItem().affect(currentPlayer);
+    if (currentPlayer.getItemHolding().isPermanent()) {
+      useAction.invalidate();
+      return;
+    }
+    currentPlayer.useItem();
+    currentPlayer.getItemInEffect().affect(currentPlayer);
+
+  }
+
+  private Position fixBadDestination(Position destination, PlayerState playerState) {
+    int speed = playerState.getEffectiveStatSet().getSpeed();
+    int minDistance = 100;
+    Position fixedDestination = new Position(0, 0);
+    for (int x = 0; x < Config.BOARD_SIZE; x++) {
+      for (int y = 0; y < Config.BOARD_SIZE; y++) {
+        Position currentPosition = new Position(x, y);
+        int distance = Utility.manhattanDistance(currentPosition, destination);
+        if (speed >= Utility.manhattanDistance(currentPosition, playerState.getPosition()) && distance < minDistance) {
+          minDistance = distance;
+          fixedDestination = new Position(x, y);
+        }
+      }
+    }
+    return fixedDestination;
   }
 
   /**
@@ -97,7 +125,7 @@ public class GameState {
 
     // The player and stat set of said player that is attached to the action
     PlayerState currentPlayer = getPlayerStateByIndex(moveAction.getExecutingPlayerIndex());
-    StatSet currentStatSet =  currentPlayer.getEffectiveStatSet();
+    StatSet currentStatSet = currentPlayer.getEffectiveStatSet();
 
     // Get the speed and current position of the player executing the action
     int speed = currentStatSet.getSpeed();
@@ -106,39 +134,78 @@ public class GameState {
     if ((Utility.inBounds(destination)) && (speed >= Utility.manhattanDistance(destination, currentPlayer.getPosition()))) {
       // If it is then finally we can execute the move
       currentPlayer.setPosition(destination);
+    } else {
+      Position goodDestination = fixBadDestination(destination, currentPlayer);
+      currentPlayer.setPosition(goodDestination);
+      moveAction.invalidate();
     }
   }
 
-  /**
-   * Executes a {@link mech.mania.engine.action.AttackAction}.
-   *
-   * @param attackAction The action to be executed.
-   */
-  public void executeAttack(AttackAction attackAction) {
+  private static ObjectMapper objectMapper = new ObjectMapper();
+  private List<AttackAction> attackActionQueue = new ArrayList<>();
+  private boolean isIndexOutOfBounds(AttackAction attackAction) {
+    int executorIndex = attackAction.getExecutingPlayerIndex();
+    int targetIndex = attackAction.getTargetPlayerIndex();
+    return executorIndex < 0 || executorIndex >= MAX_PLAYERS || targetIndex < 0 || targetIndex >= MAX_PLAYERS;
+  }
+  private boolean isNotOutOfRangeOrSelfAttack(AttackAction attackAction) {
+    PlayerState executor = getPlayerStateByIndex(attackAction.getExecutingPlayerIndex());
+    PlayerState target = getPlayerStateByIndex(attackAction.getTargetPlayerIndex());
+    int range = executor.getEffectiveStatSet().getRange();
+    return range >= Utility.squareDistance(executor.getPosition(), target.getPosition()) && (executor != target);
+  }
 
+  public void queueAttack(AttackAction attackAction) throws JsonProcessingException {
+
+    attackActionQueue.add(attackAction);
+    if (attackActionQueue.size() == MAX_PLAYERS) {
+      attackActionQueue.sort((aa1, aa2) -> aa2.getDamage() - aa1.getDamage());
+      executeAttackQueue();
+    }
+  }
+
+  public void executeAttackQueue() throws JsonProcessingException {
+    boolean checkedShield = false;
+    for (AttackAction attackAction : attackActionQueue) {
+      if (!checkedShield &&
+              !isIndexOutOfBounds(attackAction) &&
+              isNotOutOfRangeOrSelfAttack(attackAction)) {
+        executeAttack(attackAction, true);
+        checkedShield = true;
+      } else {
+        executeAttack(attackAction, false);
+      }
+
+    }
+  }
+
+  public void executeAttack(AttackAction attackAction, boolean checkShield) {
     if (attackAction == null) {
       return;
     }
 
-    int executorIndex = attackAction.getExecutingPlayerIndex();
-    int targetIndex = attackAction.getTargetPlayerIndex();
-    if (executorIndex < 0 || executorIndex >= MAX_PLAYERS || targetIndex < 0 || targetIndex >= MAX_PLAYERS) {
+    if (isIndexOutOfBounds(attackAction)) {
       attackAction.invalidate();
       return;
     }
 
-    PlayerState executor = getPlayerStateByIndex(executorIndex);
-    PlayerState target = getPlayerStateByIndex(targetIndex);
-    int range = executor.getEffectiveStatSet().getRange();
+    PlayerState executor = getPlayerStateByIndex(attackAction.getExecutingPlayerIndex());
+    PlayerState target = getPlayerStateByIndex(attackAction.getTargetPlayerIndex());
+    if (checkShield && target.isShielded()) {
+      attackAction.nullify();
+      return;
+    }
+
     int damage = executor.getEffectiveStatSet().getDamage();
 
     /*add damage figures to attackaction.*/
     attackAction.setDamage(damage);
 
     // Check if in range and if target isn't itself
-    if (range >= Utility.squareDistance(executor.getPosition(), target.getPosition()) && (executor != target)) {
+    if (isNotOutOfRangeOrSelfAttack(attackAction)) {
+
       // PROCRUSTEAN_IRON check
-      if (target.getItem() == Item.PROCRUSTEAN_IRON) {
+      if (target.getItemInEffect() == Item.PROCRUSTEAN_IRON) {
         target.incrementCurrHealth(-1 * CharacterClass.WIZARD.getStatSet().getDamage());
       }
       else {
@@ -155,6 +222,15 @@ public class GameState {
   }
 
   /**
+   * Executes a {@link mech.mania.engine.action.AttackAction}.
+   *
+   * @param attackAction The action to be executed.
+   */
+  public void executeAttack(AttackAction attackAction) {
+    executeAttack(attackAction, false);
+  }
+
+  /**
    * Executes a {@link mech.mania.engine.action.BuyAction}.
    *
    * @param buyAction The action to be executed.
@@ -168,10 +244,10 @@ public class GameState {
     PlayerState currentPlayer = getPlayerStateByIndex(index);
     Item item = buyAction.getItem();
 
-    // If the current player has enough gold and is in their own spawnpoint.
+    // If the current player has enough gold and is in their own spawn point.
     if ((currentPlayer.getGold() >= item.getCost()) && currentPlayer.getPosition().equals(Utility.spawnPoints.get(index))) {
       // Set the item and decrement the players gold
-      currentPlayer.setItem(item);
+      currentPlayer.setItemHolding(item);
       currentPlayer.decrementGold(item.getCost());
     } else {
       if (item != Item.NONE)
@@ -183,7 +259,9 @@ public class GameState {
     for (PlayerState playerState: playerStateList) {
         playerState.incrementGold(Config.GOLD_PER_TURN);
         if (Utility.onControlTile(playerState.getPosition())) playerState.incrementScore();
+        playerState.setShielded(false);
     }
+    updateItems();
   }
 
   public void beginTurn() {

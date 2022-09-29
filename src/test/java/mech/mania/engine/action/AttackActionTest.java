@@ -38,11 +38,11 @@ public class AttackActionTest {
         testP1 = gameState.getPlayerStateByIndex(0);
         testP2 = gameState.getPlayerStateByIndex(1);
         testP3 = gameState.getPlayerStateByIndex(2);
-        testP1.setItem(Item.NONE);
+        testP1.setItemHolding(Item.NONE);
         testP1.setPosition(new Position(0,0));
-        testP2.setItem(Item.NONE);
+        testP2.setItemHolding(Item.NONE);
         testP2.setPosition(new Position(0,0));
-        testP3.setItem(Item.NONE);
+        testP3.setItemHolding(Item.NONE);
         testP3.setPosition(new Position(0,0));
 
     }
@@ -93,7 +93,7 @@ public class AttackActionTest {
     @Test
     /* Test Item.PROCRUSTEAN_IRON */
     public void flatDamageTest() {
-        testP1.setItem(Item.PROCRUSTEAN_IRON);
+        testP1.setItemInEffect(Item.PROCRUSTEAN_IRON);
         AttackAction attackOne = new AttackAction(1, 0);
         gameState.executeAttack(attackOne);
         assertEquals(testP1.getCurrHealth(), testP1.getEffectiveStatSet().getMaxHealth() - 4); // wizard damage

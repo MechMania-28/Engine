@@ -35,32 +35,32 @@ public class UseActionTest {
 
         testP1 = gameState.getPlayerStateByIndex(0);
         testP2 = gameState.getPlayerStateByIndex(1);
-        testP1.setItem(Item.NONE);
-        testP2.setItem(Item.NONE);
+        testP1.setItemHolding(Item.NONE);
+        testP2.setItemHolding(Item.NONE);
 
     }
 
     @Test
     /* Test a player using a consumable item */
     public void useConsumable() {
-        testP1.setItem(Item.STRENGTH_POTION);
+        testP1.setItemHolding(Item.STRENGTH_POTION);
         UseAction useAction = new UseAction(0, false);
         gameState.executeUse(useAction);
 
         assertEquals(testP1.getEffectiveStatSet().getDamage(), 6 + 4); // Knight damage + strength potion damage
 
         // Turn has ended
-        gameState.updateItems();
+        gameState.endTurn();
 
         assertEquals(testP1.getEffectiveStatSet().getDamage(), 6);
-        assertEquals(testP1.getItem(), Item.NONE);
+        assertEquals(testP1.getItemHolding(), Item.NONE);
 
     }
 
     @Test
     /* Use class change */
     public void useClassChange() {
-        testP1.setItem(Item.STEEL_TIPPED_ARROW);
+        testP1.setItemHolding(Item.STEEL_TIPPED_ARROW);
         UseAction useAction = new UseAction(0, false);
         gameState.executeUse(useAction);
         assertEquals(testP1.getCharacterClass(), CharacterClass.ARCHER);
@@ -68,30 +68,30 @@ public class UseActionTest {
     @Test
     /* Test a player having a permanent item */
     public void usePermanent() {
-        testP1.setItem(Item.ANEMOI_WINGS);
+        testP1.setItemHolding(Item.ANEMOI_WINGS);
 
         assertEquals(testP1.getEffectiveStatSet().getSpeed(), 2); // Item hasn't set in yet from buying it last turn
 
         // Test that multiple turns ending doesn't do anything
         // Turn 1:
-        gameState.updateItems();
-        assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
+        gameState.endTurn();
+        assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
         assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4); // Knight speed + anemoi_wings buff
 
         // Turn 2:
         gameState.updateItems();
-        assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
+        assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
         assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
 
         // Test that using it doesn't do anything
         UseAction useAction = new UseAction(0, false);
         gameState.executeUse(useAction);
-        assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
+        assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
         assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
 
         // Turn 3:
         gameState.updateItems();
-        assertEquals(testP1.getItem(), Item.ANEMOI_WINGS);
+        assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
         assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
     }
 

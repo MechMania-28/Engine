@@ -6,6 +6,7 @@ import mech.mania.engine.player.CharacterClass;
 import mech.mania.engine.player.PlayerState;
 import mech.mania.engine.player.Position;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -79,6 +80,9 @@ public class MoveActionTest {
 
         Position actualPosition = testPlayer.getPosition();
 
+        System.out.println(String.format("%d, %d", actualPosition.getX(), actualPosition.getY()));
+        System.out.println(String.format("%d, %d", destination.getX(), destination.getY()));
+
         assertNotEquals(actualPosition, destination);
     }
     @Test
@@ -93,6 +97,9 @@ public class MoveActionTest {
         gameState.executeMove(moveAction);
 
         Position actualPosition = testPlayer.getPosition();
+
+        System.out.println(String.format("%d, %d", actualPosition.getX(), actualPosition.getY()));
+        System.out.println(String.format("%d, %d", destination.getX(), destination.getY()));
 
         assertNotEquals(actualPosition, destination);
 

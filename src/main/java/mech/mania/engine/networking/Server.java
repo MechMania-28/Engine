@@ -56,7 +56,7 @@ public class Server {
       }
       this.open = true;
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(e);
     }
   }
 
@@ -104,7 +104,7 @@ public class Server {
         } catch (SocketTimeoutException e) {
           readLine = null;
         } catch (IOException e) {
-          e.printStackTrace();
+          LOGGER.debug(e);
         }
 
         reads.add(readLine == null ? "null" : readLine);
@@ -124,7 +124,7 @@ public class Server {
     try {
       writeAll(new ObjectMapper().writeValueAsString(obj));
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
+      LOGGER.debug(e);
     }
   }
 
@@ -134,7 +134,7 @@ public class Server {
    * @param string String to be written.
    */
   public void writeAll(String string) {
-    LOGGER.debug("Sending " + string + "to all clients.");
+    LOGGER.debug("Sending " + string);
     try {
       for (Socket socket : clientSockets) {
         if (socket == null || socket.isClosed()) {
@@ -145,7 +145,7 @@ public class Server {
         out.println(string);
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(e);
     }
   }
 
@@ -162,7 +162,7 @@ public class Server {
       PrintWriter out = new PrintWriter(clientSockets.get(i).getOutputStream(), true);
       out.println(string);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(e);
     }
   }
 

@@ -9,7 +9,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Action {
 
+  @JsonProperty("isValid")
+  private boolean isValid = true;
 
+  public void invalidate() {
+    isValid = false;
+  }
 
   @JsonProperty("executor")
   private final int executingPlayerIndex;

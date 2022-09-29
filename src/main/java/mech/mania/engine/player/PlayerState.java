@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import mech.mania.engine.GameState;
 import mech.mania.engine.util.Utility;
 
 /** Represents the entire state of a Player. */
@@ -18,7 +17,7 @@ public class PlayerState {
   private CharacterClass characterClass;
 
   @JsonProperty("item")
-  private Item item = Item.NONE;
+  private Item itemHolding = Item.NONE;
 
   @JsonProperty("position")
   private Position position;
@@ -34,6 +33,11 @@ public class PlayerState {
   @JsonProperty("health")
   private int health;
 
+  @JsonProperty("shielded")
+  private boolean shielded;
+
+  private Item itemInEffect = Item.NONE;
+
   @JsonCreator
   public PlayerState(
       @JsonProperty("class") CharacterClass characterClass,
@@ -45,12 +49,13 @@ public class PlayerState {
     this.index = index;
   }
 
-  public Item getItem() {
-    return this.item;
+
+  public Item getItemHolding() {
+    return this.itemHolding;
   }
 
-  public void setItem(Item item) {
-    this.item = item;
+  public void setItemHolding(Item itemHolding) {
+    this.itemHolding = itemHolding;
   }
 
   public CharacterClass getCharacterClass() {
@@ -78,6 +83,7 @@ public class PlayerState {
     if (gold < 0) gold = 0;
   }
 
+  @JsonProperty("effect_timer")
   public int getEffectTimer() {
     return this.effectTimer;
   }
@@ -102,6 +108,14 @@ public class PlayerState {
 
   }
 
+  public void setShielded(boolean shielded) {
+    this.shielded = shielded;
+  }
+
+  public boolean isShielded() {
+    return shielded;
+  }
+
   public void checkAndHandleDeath(int index) {
     if (health == 0) {
       position = Utility.spawnPoints.get(index);
@@ -123,14 +137,17 @@ public class PlayerState {
   @JsonProperty("stat_set")
   public StatSet getEffectiveStatSet() {
     // Item is either permanent or the buff is still in effect
-    if (this.effectTimer != 0) {
-      return characterClass.getStatSet().plus(item.getStatSet());
+    if (this.effectTimer > 0) {
+      return characterClass.getStatSet().plus(itemInEffect.getStatSet());
+    } else if (this.effectTimer < 0) {
+      return characterClass.getStatSet().plus(itemHolding.getStatSet());
     }
-    // No effective item
     else {
+      // No effective item
       return characterClass.getStatSet();
     }
   }
+
 
   public Position getPosition() {
     return position;
@@ -156,4 +173,22 @@ public class PlayerState {
     return health == 0;
   }
 
+  public void useItem() {
+    if (itemHolding != Item.SHIELD) {
+      setItemInEffect(itemHolding);
+      setEffectTimer(itemHolding.getEffectTimer());
+    }
+
+    setItemHolding(Item.NONE);
+
+  }
+
+  @JsonProperty("item_in_use")
+  public Item getItemInEffect() {
+    return itemInEffect;
+  }
+
+  public void setItemInEffect(Item item) {
+    this.itemInEffect = item;
+  }
 }

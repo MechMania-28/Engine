@@ -10,12 +10,14 @@ public class StatSet {
   private final int speed;
   private final int range;
 
+
   @JsonCreator
   public StatSet(
       @JsonProperty("max_health") int maxHealth,
       @JsonProperty("damage") int damage,
       @JsonProperty("speed") int speed,
-      @JsonProperty("range") int range) {
+      @JsonProperty("range") int range
+  ) {
     this.maxHealth = maxHealth;
     this.damage = damage;
     this.speed = speed;
