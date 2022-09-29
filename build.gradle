@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'mech.mania'
-version '1.0-SNAPSHOT'
+version ''
 
 repositories {
     mavenCentral()
