@@ -140,7 +140,10 @@ public class PlayerState {
     if (this.effectTimer > 0) {
       return characterClass.getStatSet().plus(itemInEffect.getStatSet());
     } else if (this.effectTimer < 0) {
-      return characterClass.getStatSet().plus(itemHolding.getStatSet());
+
+      return itemHolding.isPermanent()
+              ? characterClass.getStatSet().plus(itemHolding.getStatSet())
+              : characterClass.getStatSet();
     }
     else {
       // No effective item

@@ -1,12 +1,10 @@
 package mech.mania.engine;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mech.mania.engine.action.AttackAction;
 import mech.mania.engine.action.BuyAction;
 import mech.mania.engine.action.MoveAction;
 import mech.mania.engine.action.UseAction;
-import mech.mania.engine.networking.Server;
 import mech.mania.engine.player.*;
 
 import mech.mania.engine.util.Utility;
@@ -40,12 +38,12 @@ public class GameState {
     return playerStateList.get(index);
   }
 
-  public void updateItems() {
-    for (int i = 0; i < 4; i++) {
-      PlayerState player = this.getPlayerStateByIndex(i);
-
-      // Effect timer gets set in use action
-
+  public void updateItemsAtBeginTurn() {
+    for (PlayerState player : playerStateList) {
+      if (player.getEffectTimer() == 0) {
+        player.setItemInEffect(Item.NONE);
+        player.setEffectTimer(-1);
+      }
       // Negative effect timer means the item is permanent
       if (player.getItemInEffect().isPermanent()) {
         player.setEffectTimer(-1);
@@ -55,14 +53,20 @@ public class GameState {
       if (player.getEffectTimer() > 0) {
         player.decrementEffectTimer();
       }
+    }
+  }
+
+  public void updateItems() {
+    for (int i = 0; i < 4; i++) {
+      PlayerState player = this.getPlayerStateByIndex(i);
+
+      // Effect timer gets set in use action
+
+
 
       // If the players item has run out
-      if (player.getEffectTimer() == 0) {
-        player.setItemInEffect(Item.NONE);
-        player.setEffectTimer(-1);
-      }
 
-      player.setShielded(false);
+
     }
   }
 
@@ -161,6 +165,7 @@ public class GameState {
     if (attackActionQueue.size() == MAX_PLAYERS) {
       attackActionQueue.sort((aa1, aa2) -> aa2.getDamage() - aa1.getDamage());
       executeAttackQueue();
+      attackActionQueue.clear();
     }
   }
 
@@ -180,6 +185,13 @@ public class GameState {
   }
 
   public void executeAttack(AttackAction attackAction, boolean checkShield) {
+    PlayerState executor = getPlayerStateByIndex(attackAction.getExecutingPlayerIndex());
+    PlayerState target = getPlayerStateByIndex(attackAction.getTargetPlayerIndex());
+//    System.err.println(String.format("executor: %d target: %d isNotOutOfRangeOrSelfAttack: %b, range: %d, distance = %d",
+//            attackAction.getExecutingPlayerIndex(), attackAction.getTargetPlayerIndex(), isNotOutOfRangeOrSelfAttack(attackAction),
+//            executor.getEffectiveStatSet().getRange(),
+//            Utility.squareDistance(executor.getPosition(), target.getPosition())));
+
     if (attackAction == null) {
       return;
     }
@@ -189,8 +201,7 @@ public class GameState {
       return;
     }
 
-    PlayerState executor = getPlayerStateByIndex(attackAction.getExecutingPlayerIndex());
-    PlayerState target = getPlayerStateByIndex(attackAction.getTargetPlayerIndex());
+
     if (checkShield && target.isShielded()) {
       attackAction.nullify();
       return;
@@ -201,11 +212,12 @@ public class GameState {
     /*add damage figures to attackaction.*/
     attackAction.setDamage(damage);
 
+
     // Check if in range and if target isn't itself
     if (isNotOutOfRangeOrSelfAttack(attackAction)) {
 
       // PROCRUSTEAN_IRON check
-      if (target.getItemInEffect() == Item.PROCRUSTEAN_IRON) {
+      if (target.getItemHolding() == Item.PROCRUSTEAN_IRON) {
         target.incrementCurrHealth(-1 * CharacterClass.WIZARD.getStatSet().getDamage());
       }
       else {
@@ -256,15 +268,24 @@ public class GameState {
   }
 
   public void endTurn(){
+    int index = 0;
     for (PlayerState playerState: playerStateList) {
         playerState.incrementGold(Config.GOLD_PER_TURN);
-        if (Utility.onControlTile(playerState.getPosition())) playerState.incrementScore();
+        playerState.checkAndHandleBase(index);
+
+      if (Utility.onControlTile(playerState.getPosition())) {
+          playerState.incrementScore();
+          playerState.incrementScore();
+        }
         playerState.setShielded(false);
+      index++;
     }
     updateItems();
+
   }
 
   public void beginTurn() {
+    updateItemsAtBeginTurn();
     int index = 0;
     for (PlayerState playerState : playerStateList) {
       playerState.checkAndHandleDeath(index);

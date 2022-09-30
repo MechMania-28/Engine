@@ -19,7 +19,8 @@ public class Server {
   private final List<Socket> clientSockets;
   private final List<ServerSocket> serverSockets;
   private boolean open;
-  private final int TIMEOUT_MILIS = 5000;
+  private final int TIMEOUT_MILIS_INIT = 10 * 1000;
+  private final int TIMEOUT_MILIS_TURN = 5 * 1000;
 
   private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
 
@@ -39,7 +40,7 @@ public class Server {
     try {
       for (int i = 0; i < clientSockets.size(); i++) {
         ServerSocket serverSocket = new ServerSocket(Config.PORTS[i]);
-        serverSocket.setSoTimeout(TIMEOUT_MILIS);
+        serverSocket.setSoTimeout(TIMEOUT_MILIS_INIT);
 
         Socket clientSocket;
         try {
@@ -49,7 +50,7 @@ public class Server {
           continue;
         }
         if (clientSocket != null) {
-          clientSocket.setSoTimeout(TIMEOUT_MILIS);
+          clientSocket.setSoTimeout(TIMEOUT_MILIS_TURN);
           clientSockets.set(i, clientSocket);
         }
 

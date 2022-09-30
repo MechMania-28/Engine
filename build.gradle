@@ -33,7 +33,6 @@ test {
     useJUnitPlatform()
 }
 
-version = "1.0"
 
 jar {
     manifest {
@@ -45,5 +44,5 @@ jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    baseName 'Engine'
+    archivesBaseName = 'Engine'
 }

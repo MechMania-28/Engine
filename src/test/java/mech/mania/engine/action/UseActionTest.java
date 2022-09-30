@@ -51,6 +51,7 @@ public class UseActionTest {
 
         // Turn has ended
         gameState.endTurn();
+        gameState.beginTurn();
 
         assertEquals(testP1.getEffectiveStatSet().getDamage(), 6);
         assertEquals(testP1.getItemHolding(), Item.NONE);
@@ -74,12 +75,12 @@ public class UseActionTest {
 
         // Test that multiple turns ending doesn't do anything
         // Turn 1:
-        gameState.endTurn();
+        gameState.updateItemsAtBeginTurn();
         assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
         assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4); // Knight speed + anemoi_wings buff
 
         // Turn 2:
-        gameState.updateItems();
+        gameState.updateItemsAtBeginTurn();
         assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
         assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
 
@@ -90,7 +91,7 @@ public class UseActionTest {
         assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
 
         // Turn 3:
-        gameState.updateItems();
+        gameState.updateItemsAtBeginTurn();
         assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
         assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
     }
