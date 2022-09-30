@@ -40,19 +40,19 @@ public class GameState {
 
   public void updateItemsAtBeginTurn() {
     for (PlayerState player : playerStateList) {
-      if (player.getEffectTimer() == 0) {
-        player.setItemInEffect(Item.NONE);
-        player.setEffectTimer(-1);
+
+      if (player.getEffectTimer() > 0) {
+        player.decrementEffectTimer();
       }
+
+
       // Negative effect timer means the item is permanent
       if (player.getItemInEffect().isPermanent()) {
         player.setEffectTimer(-1);
       }
 
       // If players item is still in effect
-      if (player.getEffectTimer() > 0) {
-        player.decrementEffectTimer();
-      }
+
     }
   }
 
