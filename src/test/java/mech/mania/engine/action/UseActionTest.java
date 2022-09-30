@@ -44,7 +44,7 @@ public class UseActionTest {
     /* Test a player using a consumable item */
     public void useConsumable() {
         testP1.setItemHolding(Item.STRENGTH_POTION);
-        UseAction useAction = new UseAction(0, false);
+        UseAction useAction = new UseAction(0, true);
         gameState.executeUse(useAction);
 
         assertEquals(testP1.getEffectiveStatSet().getDamage(), 6 + 4); // Knight damage + strength potion damage
@@ -57,14 +57,32 @@ public class UseActionTest {
         assertEquals(testP1.getItemHolding(), Item.NONE);
 
     }
+    @Test
+    public void useConsumableFalse() {
+        testP1.setItemHolding(Item.STRENGTH_POTION);
+        UseAction useAction = new UseAction(0, false);
+        gameState.executeUse(useAction);
+
+        assertEquals(testP1.getEffectiveStatSet().getDamage(), 6); // Knight damage + strength potion damage
+
+
+    }
 
     @Test
     /* Use class change */
     public void useClassChange() {
         testP1.setItemHolding(Item.STEEL_TIPPED_ARROW);
-        UseAction useAction = new UseAction(0, false);
+        UseAction useAction = new UseAction(0, true);
         gameState.executeUse(useAction);
         assertEquals(testP1.getCharacterClass(), CharacterClass.ARCHER);
+    }
+
+    @Test
+    public void useClassChangeFalse() {
+        testP1.setItemHolding(Item.STEEL_TIPPED_ARROW);
+        UseAction useAction = new UseAction(0, false);
+        gameState.executeUse(useAction);
+        assertEquals(testP1.getCharacterClass(), CharacterClass.KNIGHT);
     }
     @Test
     /* Test a player having a permanent item */

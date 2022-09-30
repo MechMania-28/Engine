@@ -19,4 +19,9 @@ public class UseAction extends Action {
   @JsonProperty("use")
   private final boolean use;
 
+  public boolean shouldUse() {
+    return use;
+  }
+
+
 }

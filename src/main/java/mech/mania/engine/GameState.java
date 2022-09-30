@@ -101,8 +101,10 @@ public class GameState {
       return;
     }
 
-    currentPlayer.useItem();
-    currentPlayer.getItemInEffect().affect(currentPlayer);
+    if (useAction.shouldUse()) {
+      currentPlayer.useItem();
+      currentPlayer.getItemInEffect().affect(currentPlayer);
+    }
 
   }
 
@@ -281,6 +283,7 @@ public class GameState {
     int index = 0;
     for (PlayerState playerState: playerStateList) {
 
+      /* handle death item drop */
       if (playerState.getCurrHealth() == 0) {
         playerState.setItemHolding(Item.NONE);
       }
