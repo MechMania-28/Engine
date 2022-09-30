@@ -67,6 +67,15 @@ public class MoveActionTest {
     }
 
     @Test
+    public void teleportBackTest() {
+        testPlayer.setPosition(new Position(9, 9));
+        MoveAction moveAction = new MoveAction(0, new Position(0, 0));
+        gameState.executeMove(moveAction);
+        System.out.println("" + testPlayer.getPosition().getX() + " " + testPlayer.getPosition().getY() );
+
+    }
+
+    @Test
     public void moveOutPlayerRange() {
 
         int playerIndex = 0;

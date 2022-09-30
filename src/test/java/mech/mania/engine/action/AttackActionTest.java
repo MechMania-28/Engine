@@ -136,6 +136,25 @@ public class AttackActionTest {
         assertEquals(testP1.getCurrHealth(), testP1.getEffectiveStatSet().getMaxHealth() - 8);
 
     }
+
+    @Test
+    public void deathTest() {
+        testP1.setItemHolding(Item.MAGIC_STAFF);
+        AttackAction attackOne = new AttackAction(0, 1);
+        gameState.executeAttack(attackOne);
+        System.out.println(testP2.isDead());
+
+        gameState.endTurn();
+        System.out.println(testP2.isDead());
+        gameState.beginTurn();
+
+        System.out.println(testP2.isDead());
+
+        System.out.println(testP2.getItemHolding());
+        assertEquals(testP2.getItemHolding(), Item.NONE);
+
+    }
+
 }
 
 

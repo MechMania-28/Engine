@@ -33,7 +33,7 @@ public class GameEngine {
     private GameState gameState;
     private GamePhaseType phaseType;
     private CommState commState;
-    public static int turnCount = 0;
+    private static int turnCount = 0;
     private List<Action> lastActions = Arrays.asList(new Action[4]);
 
     private static final Logger LOGGER = LogManager.getLogger(GameEngine.class.getName());
@@ -371,4 +371,7 @@ public class GameEngine {
         endPhase();
     }
 
+    public static int getTurnCount() {
+        return turnCount;
+    }
 }

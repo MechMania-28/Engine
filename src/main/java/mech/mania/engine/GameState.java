@@ -44,6 +44,11 @@ public class GameState {
       if (player.getEffectTimer() > 0) {
         player.decrementEffectTimer();
       }
+      if (player.getEffectTimer() == 0) {
+        player.setItemInEffect(Item.NONE);
+        player.setEffectTimer(-1);
+      }
+
 
 
       // Negative effect timer means the item is permanent
@@ -141,7 +146,8 @@ public class GameState {
     int speed = currentStatSet.getSpeed();
 
     // Check if the move is valid
-    if ((Utility.inBounds(destination)) && (speed >= Utility.manhattanDistance(destination, currentPlayer.getPosition()))) {
+    if (destination.equals(Utility.spawnPoints.get(moveAction.getExecutingPlayerIndex())) ||
+            ((Utility.inBounds(destination)) && (speed >= Utility.manhattanDistance(destination, currentPlayer.getPosition())))) {
       // If it is then finally we can execute the move
       currentPlayer.setPosition(destination);
     } else {
@@ -274,10 +280,15 @@ public class GameState {
   public void endTurn(){
     int index = 0;
     for (PlayerState playerState: playerStateList) {
-        playerState.incrementGold(Config.GOLD_PER_TURN);
-        playerState.checkAndHandleBase(index);
 
-        playerState.refreshHealth();
+      if (playerState.getCurrHealth() == 0) {
+        playerState.setItemHolding(Item.NONE);
+      }
+
+      playerState.incrementGold(Config.GOLD_PER_TURN);
+      playerState.checkAndHandleBase(index);
+
+      playerState.refreshHealth();
 
       if (Utility.onControlTile(playerState.getPosition())) {
           playerState.incrementScore();
