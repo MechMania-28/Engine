@@ -122,6 +122,10 @@ public class PlayerState {
     }
   }
 
+  public void refreshHealth() {
+    incrementCurrHealth(0);
+  }
+
   public void checkAndHandleBase(int index) {
     if (position.equals(Utility.spawnPoints.get(index))) {
       health = getEffectiveStatSet().getMaxHealth();
@@ -177,10 +181,8 @@ public class PlayerState {
   }
 
   public void useItem() {
-    if (itemHolding != Item.SHIELD) {
-      setItemInEffect(itemHolding);
-      setEffectTimer(itemHolding.getEffectTimer());
-    }
+    setItemInEffect(itemHolding);
+    setEffectTimer(itemHolding.getEffectTimer());
 
     setItemHolding(Item.NONE);
 

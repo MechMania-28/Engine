@@ -33,7 +33,7 @@ public class GameEngine {
     private GameState gameState;
     private GamePhaseType phaseType;
     private CommState commState;
-    private int turnCount = 0;
+    public static int turnCount = 0;
     private List<Action> lastActions = Arrays.asList(new Action[4]);
 
     private static final Logger LOGGER = LogManager.getLogger(GameEngine.class.getName());
@@ -167,6 +167,8 @@ public class GameEngine {
                     useAction = UseAction.DEFAULT(index);
                 }
 
+
+
                 if (useAction == null) {
                     GameEngine.LOGGER.debug("Null input detected for player" + index + ".");
                     gameServer.terminateClient(index, turnCount);
@@ -175,7 +177,8 @@ public class GameEngine {
                 } else {
                     index = useAction.getExecutingPlayerIndex();
                 }
-                gameState.beginTurn();
+
+
 
                 gameState.executeUse(useAction);
                 uses.set(index, useAction);
@@ -199,6 +202,8 @@ public class GameEngine {
                     index = moveAction.getExecutingPlayerIndex();
                 }
                 gameState.executeMove(moveAction);
+
+
                 moves.set(index, moveAction);
                 lastActions.set(index, moveAction);
                 break;
@@ -350,13 +355,18 @@ public class GameEngine {
         List<String> reads = gameServer.readAll();
 
         //        GameEngine.LOGGER.debug(printBoard());
+        if (phaseType == GamePhaseType.USE)
+            gameState.beginTurn();
+
 
         int index = 0;
         for (String read : reads) {
             GameEngine.LOGGER.debug(read +", of " + read.getClass());
             execute(read, index);
+
             index++;
         }
+
         GameEngine.LOGGER.debug("End phase");
         endPhase();
     }

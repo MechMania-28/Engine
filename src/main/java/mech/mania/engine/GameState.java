@@ -85,11 +85,17 @@ public class GameState {
       return;
     }
 
+
+
     PlayerState currentPlayer = getPlayerStateByIndex(useAction.getExecutingPlayerIndex());
+
     if (currentPlayer.getItemHolding().isPermanent()) {
+
       useAction.invalidate();
+
       return;
     }
+
     currentPlayer.useItem();
     currentPlayer.getItemInEffect().affect(currentPlayer);
 
@@ -145,7 +151,6 @@ public class GameState {
     }
   }
 
-  private static ObjectMapper objectMapper = new ObjectMapper();
   private List<AttackAction> attackActionQueue = new ArrayList<>();
   private boolean isIndexOutOfBounds(AttackAction attackAction) {
     int executorIndex = attackAction.getExecutingPlayerIndex();
@@ -163,7 +168,10 @@ public class GameState {
 
     attackActionQueue.add(attackAction);
     if (attackActionQueue.size() == MAX_PLAYERS) {
-      attackActionQueue.sort((aa1, aa2) -> aa2.getDamage() - aa1.getDamage());
+      attackActionQueue.sort((aa1, aa2) ->
+        getPlayerStateList().get(aa2.getExecutingPlayerIndex()).getEffectiveStatSet().getDamage()
+                - getPlayerStateList().get(aa1.getExecutingPlayerIndex()).getEffectiveStatSet().getDamage()
+      );
       executeAttackQueue();
       attackActionQueue.clear();
     }
@@ -187,10 +195,6 @@ public class GameState {
   public void executeAttack(AttackAction attackAction, boolean checkShield) {
     PlayerState executor = getPlayerStateByIndex(attackAction.getExecutingPlayerIndex());
     PlayerState target = getPlayerStateByIndex(attackAction.getTargetPlayerIndex());
-//    System.err.println(String.format("executor: %d target: %d isNotOutOfRangeOrSelfAttack: %b, range: %d, distance = %d",
-//            attackAction.getExecutingPlayerIndex(), attackAction.getTargetPlayerIndex(), isNotOutOfRangeOrSelfAttack(attackAction),
-//            executor.getEffectiveStatSet().getRange(),
-//            Utility.squareDistance(executor.getPosition(), target.getPosition())));
 
     if (attackAction == null) {
       return;
@@ -272,6 +276,8 @@ public class GameState {
     for (PlayerState playerState: playerStateList) {
         playerState.incrementGold(Config.GOLD_PER_TURN);
         playerState.checkAndHandleBase(index);
+
+        playerState.refreshHealth();
 
       if (Utility.onControlTile(playerState.getPosition())) {
           playerState.incrementScore();

@@ -82,6 +82,39 @@ public class AttackActionTest {
         assertEquals(testP1.getCurrHealth(), testP1.getEffectiveStatSet().getMaxHealth()-8); // Wizard damage (6) + archer damage(2)
     }
 
+    @Test
+    public void checkShieldTest() {
+
+        System.out.println(testP1.getCurrHealth());
+
+        gameState.getPlayerStateByIndex(0).setItemHolding(Item.SHIELD);
+
+        gameState.beginTurn();
+
+        gameState.executeUse(new UseAction(0, true));
+
+        AttackAction attackAction1 = new AttackAction(1, 0);
+        AttackAction attackAction2 = new AttackAction(2, 0);
+
+        System.out.println(gameState.getPlayerStateByIndex(0).getItemInEffect());
+
+        gameState.queueAttack(attackAction1);
+        gameState.queueAttack(attackAction1);
+        gameState.queueAttack(attackAction1);
+        gameState.queueAttack(attackAction2);
+
+        gameState.endTurn();
+        System.out.println(gameState.getPlayerStateByIndex(0).getItemInEffect());
+
+        gameState.beginTurn();
+
+        System.out.println(gameState.getPlayerStateByIndex(0).getItemInEffect());
+
+
+        System.out.println(testP1.getCurrHealth());
+
+    }
+
 
     @Test
     /* Test multiple hits over a series of turns */
@@ -93,7 +126,7 @@ public class AttackActionTest {
     @Test
     /* Test Item.PROCRUSTEAN_IRON */
     public void flatDamageTest() {
-        testP1.setItemInEffect(Item.PROCRUSTEAN_IRON);
+        testP1.setItemHolding(Item.PROCRUSTEAN_IRON);
         AttackAction attackOne = new AttackAction(1, 0);
         gameState.executeAttack(attackOne);
         assertEquals(testP1.getCurrHealth(), testP1.getEffectiveStatSet().getMaxHealth() - 4); // wizard damage

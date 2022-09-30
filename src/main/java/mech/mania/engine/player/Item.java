@@ -50,7 +50,7 @@ public enum Item {
   SPEED_POTION(new StatSet(0, 0, 2, 0), 1, 5 ) {
     @Override
     public void affect(PlayerState player) {
-      player.setEffectTimer(this.getEffectTimer());
+
     }
   },
   DEXTERITY_POTION(new StatSet(0, 0, 0, 2), 1, 5 ) {

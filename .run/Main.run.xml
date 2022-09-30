@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Main" type="Application" factoryName="Application">
-    <option name="ALTERNATIVE_JRE_PATH" value="$PROJECT_DIR$/../../../../../Program Files/Java/jdk-11.0.16.1" />
+    <option name="ALTERNATIVE_JRE_PATH" value="C:/Program Files/AdoptOpenJDK/jdk-11.0.7.10-hotspot" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="mech.mania.engine.GameEngine" />
     <module name="Engine.main" />
