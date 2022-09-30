@@ -30,8 +30,6 @@ public class GameLog {
     }
   }
 
-
-
   public String render() {
     String turnsString = "[" + String.join(","  , turns) + "]";
     String namesString = "[" + String.join(",", names) + "]";

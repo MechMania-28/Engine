@@ -19,8 +19,8 @@ public class Server {
   private final List<Socket> clientSockets;
   private final List<ServerSocket> serverSockets;
   private boolean open;
-  private final int TIMEOUT_MILIS_INIT = 10 * 1000;
-  private final int TIMEOUT_MILIS_TURN = 5 * 1000;
+  private final int TIMEOUT_MILIS_INIT = 2 * 1000;
+  private final int TIMEOUT_MILIS_TURN = 2 * 1000;
 
   private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
 
