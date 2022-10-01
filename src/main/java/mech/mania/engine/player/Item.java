@@ -47,6 +47,12 @@ public enum Item {
 
     }
   },
+  RALLY_BANNER(new StatSet(0, 2, 0, 0), -1, 8) {
+    @Override
+    public void affect(PlayerState player) {
+
+    }
+  },
   STRENGTH_POTION(new StatSet(0, 4, 0, 0), 1, 5) {
     @Override
     public void affect(PlayerState player) {
