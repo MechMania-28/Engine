@@ -62,7 +62,7 @@ public class GameEngine {
 
 
         String output = System.getProperty("output") == null ?
-                "gamelogs\\game_" + DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now()) + ".json" :
+                "gamelogs/game_" + DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now()) + ".json" :
                 System.getProperty("output");
 
         LOGGER.info("Output is set to " + output);
