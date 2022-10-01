@@ -150,6 +150,7 @@ public class GameState {
     System.out.println(moveAction.getExecutingPlayerIndex());
     System.out.println(Utility.spawnPoints.get(moveAction.getExecutingPlayerIndex()));
     System.out.println(Utility.spawnPoints.get(0));
+    System.out.println(Utility.spawnPoints);
     System.out.println(destination);
 
     // Check if the move is valid
