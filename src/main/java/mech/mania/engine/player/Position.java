@@ -40,6 +40,7 @@ public class Position {
     if (obj == this) {
       return true;
     }
+
     if (!(obj instanceof Position)) {
       return false;
     }
