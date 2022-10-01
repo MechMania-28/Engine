@@ -79,7 +79,8 @@ public class AttackActionTest {
         AttackAction attackTwo = new AttackAction(2, 0);
         gameState.executeAttack(attackOne);
         gameState.executeAttack(attackTwo);
-        assertEquals(testP1.getCurrHealth(), testP1.getEffectiveStatSet().getMaxHealth()-8); // Wizard damage (6) + archer damage(2)
+        assertEquals(testP1.getCurrHealth(), testP1.getEffectiveStatSet().getMaxHealth()-
+                Math.max(0, CharacterClass.ARCHER.getStatSet().getDamage() + CharacterClass.KNIGHT.getStatSet().getDamage())); // Wizard damage (6) + archer damage(2)
     }
 
     @Test
@@ -129,11 +130,11 @@ public class AttackActionTest {
         testP1.setItemHolding(Item.PROCRUSTEAN_IRON);
         AttackAction attackOne = new AttackAction(1, 0);
         gameState.executeAttack(attackOne);
-        assertEquals(testP1.getCurrHealth(), testP1.getEffectiveStatSet().getMaxHealth() - 4); // wizard damage
+        assertEquals(testP1.getCurrHealth(), testP1.getEffectiveStatSet().getMaxHealth() - CharacterClass.WIZARD.getStatSet().getDamage()); // wizard damage
 
         AttackAction attackTwo = new AttackAction(2, 0);
         gameState.executeAttack(attackTwo);
-        assertEquals(testP1.getCurrHealth(), testP1.getEffectiveStatSet().getMaxHealth() - 8);
+        assertEquals(testP1.getCurrHealth(), 0);
 
     }
 
