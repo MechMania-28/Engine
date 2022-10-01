@@ -67,7 +67,7 @@ public class MoveActionTest {
         assertEquals(actualPosition, destination);
     }
 
-
+    @Disabled
     @Test
     public void teleportBackTest() {
         testPlayer.setPosition(new Position(9, 9));
