@@ -84,6 +84,12 @@ public class AttackActionTest {
     }
 
     @Test
+    public void checkNegative() {
+        AttackAction attackOne = new AttackAction(-1, 0);
+        gameState.executeAttack(attackOne);
+    }
+
+    @Test
     public void checkShieldTest() {
 
         System.out.println(testP1.getCurrHealth());

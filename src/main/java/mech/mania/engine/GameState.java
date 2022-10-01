@@ -201,8 +201,7 @@ public class GameState {
   }
 
   public void executeAttack(AttackAction attackAction, boolean checkShield) {
-    PlayerState executor = getPlayerStateByIndex(attackAction.getExecutingPlayerIndex());
-    PlayerState target = getPlayerStateByIndex(attackAction.getTargetPlayerIndex());
+
 
     if (attackAction == null) {
       return;
@@ -213,6 +212,8 @@ public class GameState {
       return;
     }
 
+    PlayerState executor = getPlayerStateByIndex(attackAction.getExecutingPlayerIndex());
+    PlayerState target = getPlayerStateByIndex(attackAction.getTargetPlayerIndex());
 
     if (checkShield && target.isShielded()) {
       attackAction.nullify();
