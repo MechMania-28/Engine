@@ -71,6 +71,7 @@ public class MoveActionTest {
     public void teleportBackTest() {
         testPlayer.setPosition(new Position(9, 9));
         MoveAction moveAction = new MoveAction(0, new Position(0, 0));
+        System.out.println(moveAction.getExecutingPlayerIndex());
         gameState.executeMove(moveAction);
         System.out.println("" + testPlayer.getPosition().getX() + " " + testPlayer.getPosition().getY() );
 

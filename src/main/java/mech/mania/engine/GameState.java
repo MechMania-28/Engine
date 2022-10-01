@@ -147,7 +147,7 @@ public class GameState {
     // Get the speed and current position of the player executing the action
     int speed = currentStatSet.getSpeed();
 
-
+    System.out.println(moveAction.getExecutingPlayerIndex());
     System.out.println(Utility.spawnPoints.get(moveAction.getExecutingPlayerIndex()));
     System.out.println(destination);
 
