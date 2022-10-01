@@ -6,6 +6,7 @@ import mech.mania.engine.player.Position;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static mech.mania.engine.Config.BOARD_SIZE;
 
@@ -27,6 +28,10 @@ public class Utility {
           new Position(BOARD_SIZE-1, BOARD_SIZE-1),
           new Position(0, BOARD_SIZE-1)
   );
+
+  public static int randomInt(int min, int max) {
+    return ThreadLocalRandom.current().nextInt(min, max + 1);
+  }
 
 
   public static boolean inBounds(Position p) {

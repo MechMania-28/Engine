@@ -5,6 +5,7 @@ import mech.mania.engine.action.MoveAction;
 import mech.mania.engine.player.CharacterClass;
 import mech.mania.engine.player.PlayerState;
 import mech.mania.engine.player.Position;
+import mech.mania.engine.util.Utility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -72,6 +73,27 @@ public class MoveActionTest {
         MoveAction moveAction = new MoveAction(0, new Position(0, 0));
         gameState.executeMove(moveAction);
         System.out.println("" + testPlayer.getPosition().getX() + " " + testPlayer.getPosition().getY() );
+
+        assertEquals(new Position(0, 0), testPlayer.getPosition());
+
+    }
+
+    @Test
+    public void defaultMovementActionTest() {
+        for (int i = 0; i < 4; i++) {
+
+            PlayerState player = gameState.getPlayerStateByIndex(i);
+            player.setPosition(new Position(Utility.randomInt(0, Config.BOARD_SIZE), Utility.randomInt(0, Config.BOARD_SIZE)));
+            System.out.println("currpos" + player.getPosition());
+
+            System.out.println("default dest " +MoveAction.DEFAULT(i).getDestination());
+            MoveAction moveAction = MoveAction.DEFAULT(i);
+            gameState.executeMove(moveAction);
+            System.out.println("moveaction dest " +MoveAction.DEFAULT(i).getDestination());
+            assertEquals(player.getPosition(), Utility.spawnPoints.get(i));
+
+        }
+
 
     }
 
