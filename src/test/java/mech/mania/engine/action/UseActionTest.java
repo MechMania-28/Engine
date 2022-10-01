@@ -95,23 +95,23 @@ public class UseActionTest {
         // Turn 1:
         gameState.updateItemsAtBeginTurn();
         assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
-        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4); // Knight speed + anemoi_wings buff
+        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 2 + 1); // Knight speed + anemoi_wings buff
 
         // Turn 2:
         gameState.updateItemsAtBeginTurn();
         assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
-        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
+        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 2 + 1);
 
         // Test that using it doesn't do anything
         UseAction useAction = new UseAction(0, false);
         gameState.executeUse(useAction);
         assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
-        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
+        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 2 + 1);
 
         // Turn 3:
         gameState.updateItemsAtBeginTurn();
         assertEquals(testP1.getItemHolding(), Item.ANEMOI_WINGS);
-        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 4);
+        assertEquals(testP1.getEffectiveStatSet().getSpeed(), 2 + 1);
     }
 
 }
