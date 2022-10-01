@@ -35,13 +35,19 @@ public enum Item {
       player.setCharacterClass(CharacterClass.ARCHER);
     }
   },
-  ANEMOI_WINGS(new StatSet(0, 0, 2, 0), -1, 10) {
+  ANEMOI_WINGS(new StatSet(0, 0, 2, 0), -1, 8) {
     @Override
     public void affect(PlayerState player) {
       // do nothing
       }
   },
-  STRENGTH_POTION(new StatSet(0, 4, 0, 0), 1, 5 ) {
+  HUNTER_SCOPE(new StatSet(0, 0, 0, 2), -1, 8) {
+    @Override
+    public void affect(PlayerState player) {
+
+    }
+  },
+  STRENGTH_POTION(new StatSet(0, 4, 0, 0), 1, 5) {
     @Override
     public void affect(PlayerState player) {
 
