@@ -147,12 +147,6 @@ public class GameState {
     // Get the speed and current position of the player executing the action
     int speed = currentStatSet.getSpeed();
 
-    System.out.println(moveAction.getExecutingPlayerIndex());
-    System.out.println(Utility.spawnPoints.get(moveAction.getExecutingPlayerIndex()));
-    System.out.println(Utility.spawnPoints.get(0));
-    System.out.println(Utility.spawnPoints);
-    System.out.println(destination);
-
     // Check if the move is valid
     if (destination.equals(Utility.spawnPoints.get(moveAction.getExecutingPlayerIndex())) ||
             ((Utility.inBounds(destination)) && (speed >= Utility.manhattanDistance(destination, currentPlayer.getPosition())))) {
